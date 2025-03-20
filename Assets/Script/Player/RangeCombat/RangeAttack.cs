@@ -7,10 +7,12 @@ public class RangeAttack : MonoBehaviour
     public Transform player;
     public float orbitRadius = 1.5f;
     public GameObject firePrefab;
+    public GameObject icePrefab;
+    public GameObject electricPrefab;
     public float fireSpeed = 10f;
     public Transform fireSpawnPoint;
 
-    [Header("Engeller Icin LayerMask")]
+    [Header("Engeller Ýçin LayerMask")]
     public LayerMask obstacleLayer;
 
     private Vector3 mousePosition;
@@ -19,9 +21,20 @@ public class RangeAttack : MonoBehaviour
 
     public int active = 1;
 
-    [Header("Ates Etme Cooldown Suresi")]
+    [Header("Ateþ Etme Cooldown Süresi")]
     public float fireCooldown = 0.5f; // 0.5 saniye cooldown
-    private float lastFireTime; // Son ates zamani
+    private float lastFireTime; // Son ateþ zamaný
+
+    private SpriteRenderer spriteRenderer;
+
+    private enum ElementType { Fire, Ice, Electric }
+    private ElementType currentElement = ElementType.Fire;
+
+    void Start()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        UpdateElementAppearance();
+    }
 
     void Update()
     {
@@ -30,6 +43,11 @@ public class RangeAttack : MonoBehaviour
             FollowMouse();
             RotateAroundPlayer();
             ShootOnClick();
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                ChangeElement();
+            }
         }
     }
 
@@ -44,7 +62,6 @@ public class RangeAttack : MonoBehaviour
 
     private void RotateAroundPlayer()
     {
-
         Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0) * orbitRadius;
         transform.position = player.position + offset;
         float lookAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -53,29 +70,68 @@ public class RangeAttack : MonoBehaviour
 
     private void ShootOnClick()
     {
-        if (Input.GetMouseButtonDown(0) && Time.time >= lastFireTime + fireCooldown) // Sol tik ve cooldown kontrol
+        if (Input.GetMouseButtonDown(0) && Time.time >= lastFireTime + fireCooldown) // Sol týk ve cooldown kontrolü
         {
             float detectionRadius = 0.1f;
             Collider2D hit = Physics2D.OverlapCircle(fireSpawnPoint.position, detectionRadius, obstacleLayer);
 
             if (hit == null)
             {
-                GameObject fire = Instantiate(firePrefab, fireSpawnPoint.position, Quaternion.identity);
-                Rigidbody2D rb = fire.GetComponent<Rigidbody2D>();
+                GameObject projectilePrefab = GetCurrentProjectilePrefab();
+                GameObject projectile = Instantiate(projectilePrefab, fireSpawnPoint.position, Quaternion.identity);
+                Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
 
                 if (rb != null)
                 {
                     rb.velocity = direction.normalized * fireSpeed;
                     float rotationZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                    fire.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
+                    projectile.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
                 }
 
-                lastFireTime = Time.time; // Son ates zamanini guncelle
+                lastFireTime = Time.time; // Son ateþ zamanýný güncelle
             }
             else
             {
-                Debug.Log($"Ates noktasi iceride: {hit.gameObject.name}, ates edilemiyor!");
+                Debug.Log($"Ateþ noktasý içeride: {hit.gameObject.name}, ateþ edilemiyor!");
             }
+        }
+    }
+
+    private void ChangeElement()
+    {
+        currentElement = (ElementType)(((int)currentElement + 1) % 3);
+        UpdateElementAppearance();
+    }
+
+    private void UpdateElementAppearance()
+    {
+        if (spriteRenderer != null)
+        {
+            switch (currentElement)
+            {
+                case ElementType.Fire:
+                    spriteRenderer.color = Color.red;
+                    break;
+                case ElementType.Ice:
+                    spriteRenderer.color = Color.cyan;
+                    break;
+                case ElementType.Electric:
+                    spriteRenderer.color = Color.yellow;
+                    break;
+            }
+        }
+    }
+
+    private GameObject GetCurrentProjectilePrefab()
+    {
+        switch (currentElement)
+        {
+            case ElementType.Ice:
+                return icePrefab;
+            case ElementType.Electric:
+                return electricPrefab;
+            default:
+                return firePrefab;
         }
     }
 

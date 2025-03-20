@@ -30,7 +30,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6185097435724327155, guid: 809f90ae45f1252468990b7956adf4ef, type: 3}
       propertyPath: m_Name
-      value: RedSpikes Variant
+      value: RedSpikes
+      objectReference: {fileID: 0}
+    - target: {fileID: 6185097435724327155, guid: 809f90ae45f1252468990b7956adf4ef, type: 3}
+      propertyPath: m_TagString
+      value: Trap
       objectReference: {fileID: 0}
     - target: {fileID: 7832376832240723380, guid: 809f90ae45f1252468990b7956adf4ef, type: 3}
       propertyPath: m_Size.x
