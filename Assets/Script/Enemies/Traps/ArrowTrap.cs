@@ -1,20 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class ArrowTrap : MonoBehaviour
 {
-    [SerializeField] private float attackCooldown;
-    [SerializeField] private Transform firePoint;
-    [SerializeField] private GameObject[] arrows;
-    private float cooldownTimer;
+    #region Ayarlar
+    [SerializeField] private float attackCooldown;           // Ok firlatma bekleme suresi
+    [SerializeField] private Transform firePoint;            // Okun cikacagi nokta
+    [SerializeField] private GameObject[] arrows;            // Havuzlanmis oklar
+    private float cooldownTimer;                             // Gecen zaman
+    #endregion
 
+    #region Unity Fonksiyonlari
+    private void Update()
+    {
+        cooldownTimer += Time.deltaTime;
+        
+        if (cooldownTimer >= attackCooldown)
+            Attack();
+    }
+    #endregion
+
+    #region Atis Mekanigi
     private void Attack()
     {
         cooldownTimer = 0;
 
-        arrows[FindArrow()].transform.position = firePoint.position;
-        arrows[FindArrow()].GetComponent<EnemyProjectile>().ActivateProjectile();
+        int index = FindArrow(); // Kullanilmayan oku bul
+        arrows[index].transform.position = firePoint.position;
+        arrows[index].GetComponent<EnemyProjectile>().ActivateProjectile();
     }
 
     private int FindArrow()
@@ -24,14 +39,9 @@ public class ArrowTrap : MonoBehaviour
             if (!arrows[i].activeInHierarchy)
                 return i;
         }
+
+        // Hepsi aktifse ilk oku kullan (opsiyonel: havuz buyutulebilir)
         return 0;
     }
-
-    private void Update()
-    {
-        cooldownTimer += Time.deltaTime;
-
-        if(cooldownTimer >= attackCooldown)
-            Attack();
-    }
+    #endregion
 }

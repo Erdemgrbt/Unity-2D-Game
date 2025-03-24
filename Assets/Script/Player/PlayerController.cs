@@ -5,100 +5,41 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Bilesenler
+    private Rigidbody2D rb;
+    private Animator animator;
     private TrailRenderer _trailRenderer;
+    private TouchingDirections touchingDirections;
+    #endregion
 
+    #region Hareket Ayarlari
     [Header("Hareket Parametreleri")]
-    public float walkSpeed = 5f; // Yürüme Hýzý
-    public float airWalkSpeed = 3f; // Havada süzülme hýzý
-    public float jumpImpulse = 10f; // Zýplama kuvveti
+    public float walkSpeed = 5f;
+    public float airWalkSpeed = 3f;
+    public float jumpImpulse = 10f;
 
+    [Header("Ekstra Hareket Parametreleri")]
+    public float coyoteTime = 0.2f;     // Ziplamadan sonra yere basmamis gibi davranma suresi
+    public float jumpBufferTime = 0.1f; // Ziplamaya erken basildiysa hatirlama suresi
+    private float lastGroundedTime;
+    private float lastJumpPressTime;
+    private Vector2 moveInput;
+    #endregion
+
+    #region Dash Ayarlari
     [Header("Dash Parametreleri")]
-    [SerializeField] private float _dashingVelocity = 14f; // Dash yapma kuvveti
-    [SerializeField] private float _dashingTime = 0.5f;  // Dash yapma süresi
-    [SerializeField] private float _dashCooldown = 1f;  // Dash cooldown süresi
+    [SerializeField] private float _dashingVelocity = 14f;
+    [SerializeField] private float _dashingTime = 0.5f;
+    [SerializeField] private float _dashCooldown = 1f;
     private Vector2 _dashingDir;
     [SerializeField] private bool _isDashing;
     [SerializeField] private bool _canDash = true;
-    private float _lastDashTime;  // Son dash yapýlma zamaný
+    private float _lastDashTime;
+    #endregion
 
-    [Header("Ekstra Hareket Parametreleri")]
-    public float coyoteTime = 0.2f; // Coyote Time süresi
-    public float jumpBufferTime = 0.1f; // Jump Buffer süresi
-    private float lastGroundedTime; // Oyuncunun yere en son dokunduðu zaman
-    private float lastJumpPressTime; // Oyuncunun zýplama tuþuna en son bastýðý zaman
-
-
-    Rigidbody2D rb;
-    Animator animator;
-    private Vector2 moveInput;
-
-    //Referans
-    TouchingDirections touchingDirections; //Touching Directions Scriptine Eriþim
-
-    // Oyun Baþlatýldýðý An Çalýþtýrýlacak Fonksiyon
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        touchingDirections = GetComponent<TouchingDirections>();
-        _trailRenderer = GetComponent<TrailRenderer>();
-    }
-
-    // Devamlý Çalýþtýrýlmasý Gereken Fizik Uygulamalarý Ýçin Fonksiyon
-    private void FixedUpdate()
-    {
-        // Hareket hýzýna göre ilerleme
-        rb.velocity = new Vector2(moveInput.x * (CurrentMoveSpeed * 100) * Time.fixedDeltaTime, rb.velocity.y);
-
-        animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
-
-        // Coyote Time: Oyuncunun yere en son dokunduðu zamaný güncelle
-        if (touchingDirections.IsGrounded)
-        {
-            lastGroundedTime = Time.time;
-        }
-
-        // Dash esnasýnda hýz kontrolü
-        if (_isDashing)
-        {
-            rb.velocity = _dashingDir.normalized * _dashingVelocity;
-            return;
-        }
-
-        if (touchingDirections.IsGrounded)
-        {
-            _canDash = true;
-        }
-    }
-
-    public float CurrentMoveSpeed
-    {
-        get
-        {
-            if (isMoving && !touchingDirections.IsOnWall)
-            {
-                if (touchingDirections.IsGrounded)
-                {
-                    return walkSpeed;
-                }
-                else
-                {
-                    // Havada Hareket Etme
-                    return airWalkSpeed;
-                }
-            }
-            else
-            {
-                // Sabitken Hýz 0
-                return 0;
-            }
-        }
-    }
-
-    [Header("Diðer")]
-    // Yürüme Animasyonu
-    [SerializeField]
-    private bool _isMoving = false;
+    #region Yurutme & Yon Ayarlari
+    [Header("Yurutme ve Yon")]
+    [SerializeField] private bool _isMoving = false;
     public bool isMoving
     {
         get { return _isMoving; }
@@ -109,7 +50,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Yön Tespiti
     public bool _isFacingRight = true;
     public bool IsFacingRight
     {
@@ -123,63 +63,79 @@ public class PlayerController : MonoBehaviour
             _isFacingRight = value;
         }
     }
+    #endregion
 
-    // Hareket Etme
-    public void onMove(InputAction.CallbackContext context)
+    #region Unity Fonksiyonlari
+    private void Awake()
     {
-        moveInput = context.ReadValue<Vector2>();
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        touchingDirections = GetComponent<TouchingDirections>();
+        _trailRenderer = GetComponent<TrailRenderer>();
+    }
 
-        isMoving = moveInput != Vector2.zero;
+    private void FixedUpdate()
+    {
+        // Normal hareket
+        rb.velocity = new Vector2(moveInput.x * (CurrentMoveSpeed * 100) * Time.fixedDeltaTime, rb.velocity.y);
 
-        setFacingDirection(moveInput);
+        animator.SetFloat(AnimationStrings.yVelocity, rb.velocity.y);
+
+        // Coyote Time kontrolu
+        if (touchingDirections.IsGrounded)
+        {
+            lastGroundedTime = Time.time;
+        }
+
+        // Dash yapiliyorsa sabit hiz uygula
+        if (_isDashing)
+        {
+            rb.velocity = _dashingDir.normalized * _dashingVelocity;
+            return;
+        }
+
+        // Yere basiliyorsa tekrar dash yapilabilir
+        if (touchingDirections.IsGrounded)
+        {
+            _canDash = true;
+        }
+    }
+    #endregion
+
+    #region Hareket Hesaplama
+    public float CurrentMoveSpeed
+    {
+        get
+        {
+            if (isMoving && !touchingDirections.IsOnWall)
+            {
+                return touchingDirections.IsGrounded ? walkSpeed : airWalkSpeed;
+            }
+            return 0;
+        }
     }
 
     private void setFacingDirection(Vector2 moveInput)
     {
         if (moveInput.x > 0 && !IsFacingRight)
         {
-            // Sað
             IsFacingRight = true;
         }
         else if (moveInput.x < 0 && IsFacingRight)
         {
-            // Sol
             IsFacingRight = false;
         }
     }
+    #endregion
 
-    public void OnDash(InputAction.CallbackContext context)
+    #region Input Fonksiyonlari
+    public void onMove(InputAction.CallbackContext context)
     {
-        if (context.started && _canDash && Time.time >= _lastDashTime + _dashCooldown) // Dash giriþ ve cooldown kontrolü
-        {
-            _isDashing = true;
-            _canDash = false;
-            _trailRenderer.emitting = true;
-
-            // Farenin ekran koordinatlarýndan yönü hesapla
-            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            _dashingDir = (mousePosition - (Vector2)transform.position).normalized;
-
-            _lastDashTime = Time.time; // Son dash zamanýný güncelle
-            StartCoroutine(StopDashing());
-        }
+        moveInput = context.ReadValue<Vector2>();
+        isMoving = moveInput != Vector2.zero;
+        setFacingDirection(moveInput);
     }
 
-    private IEnumerator StopDashing()
-    {
-        yield return new WaitForSeconds(_dashingTime); // Dash süresi boyunca bekle
-
-        // Dash sona erdiðinde hýz ayarý
-        if (!touchingDirections.IsGrounded) // Karakter havadaysa
-        {
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Min(rb.velocity.y, 0)); // Yukarýya hareket varsa, durdur
-        }
-
-        _trailRenderer.emitting = false;
-        _isDashing = false;
-    }
-
-    // Zýplama
     public void OnJump(InputAction.CallbackContext context)
     {
         if (context.started)
@@ -187,7 +143,6 @@ public class PlayerController : MonoBehaviour
             lastJumpPressTime = Time.time;
         }
 
-        // Coyote Time ve Jump Buffer kontrolleri
         if ((Time.time - lastGroundedTime <= coyoteTime || touchingDirections.IsGrounded) &&
             Time.time - lastJumpPressTime <= jumpBufferTime)
         {
@@ -195,4 +150,34 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
         }
     }
+
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.started && _canDash && Time.time >= _lastDashTime + _dashCooldown)
+        {
+            _isDashing = true;
+            _canDash = false;
+            _trailRenderer.emitting = true;
+
+            Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            _dashingDir = (mousePosition - (Vector2)transform.position).normalized;
+
+            _lastDashTime = Time.time;
+            StartCoroutine(StopDashing());
+        }
+    }
+
+    private IEnumerator StopDashing()
+    {
+        yield return new WaitForSeconds(_dashingTime);
+
+        if (!touchingDirections.IsGrounded)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Min(rb.velocity.y, 0));
+        }
+
+        _trailRenderer.emitting = false;
+        _isDashing = false;
+    }
+    #endregion
 }

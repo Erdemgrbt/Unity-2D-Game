@@ -1,36 +1,80 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.PlayerLoop;
 
 public class Health : MonoBehaviour
 {
-    //Ýzzettin deðiþtirdiði yer 
-    [Header("Saðlýk")]
-    [SerializeField] private float startingHealth;
-    public float currentHealth { get; private set; }
+    #region Saglik
+    [Header("Saglik")]
+    [SerializeField] private float startingHealth;       // Baslangic sagligi
+    public float currentHealth { get; private set; }     // Mevcut saglik (sadece okunabilir)
     private Animator anim;
-    public bool dead;
+    public bool dead;                                    // Oldu mu?
+    #endregion
 
+    #region Yenilmezlik
     [Header("Yenilmezlik Durumu")]
-    public float invincibilityDuration; // Hasar aldýktan sonra kaç saniye hasar alamaz hale geçicek.
-    private bool isInvincible = false; // Hasar alamaz durumun kontrolü
+    public float invincibilityDuration;                  // Hasar alinamayacak sure
+    private bool isInvincible = false;                   // Yenilmezlik aktif mi?
+    #endregion
 
-    private Vector3 originalScale; // Karakterin orijinal ölçeði
+    #region Diger Bilesenler
+    private Vector3 originalScale;                       // Orijinal boyut
+    public Transform spawnPoint;                         // Yeniden dogma noktasi
+    public RangeAttack rangeAttack;                      // RangeAttack kontrolu
+    #endregion
 
-    public Transform spawnPoint;
-    public RangeAttack rangeAttack;
-
+    #region Unity Fonksiyonlari
     private void Awake()
     {
         currentHealth = startingHealth;
         anim = GetComponent<Animator>();
-
-        originalScale = transform.localScale; // Baþlangýçta ölçeði kaydet
+        originalScale = transform.localScale;
     }
 
+    private void Update()
+    {
+        // Test: E tusu ile hasar ver
+        if (Input.GetKeyDown(KeyCode.E) && gameObject.CompareTag("Player"))
+        {
+            TakeDamage(1);
+        }
+
+        // R tusu ile canlandirma
+        if (currentHealth <= 0 && Input.GetKeyDown(KeyCode.R) && gameObject.CompareTag("Player"))
+        {
+            dead = false;
+            anim.SetTrigger("revive");
+            currentHealth = startingHealth;
+
+            GetComponent<PlayerController>().enabled = true;
+            GetComponent<PlayerInput>().enabled = true;
+
+            if (rangeAttack != null)
+            {
+                rangeAttack.active = 1;
+                Debug.Log("RangeAttack acildi!");
+            }
+            else
+            {
+                Debug.LogError("RangeAttack bileseni bulunamadi!");
+            }
+
+            // Yeniden dogma noktasi varsa oraya git
+            if (spawnPoint != null)
+            {
+                transform.position = spawnPoint.position;
+            }
+            else
+            {
+                Debug.LogWarning("SpawnPoint atanamadi!");
+            }
+        }
+    }
+    #endregion
+
+    #region Hasar Islemleri
     public void TakeDamage(float _damage)
     {
         if (isInvincible) return;
@@ -48,111 +92,52 @@ public class Health : MonoBehaviour
             {
                 anim.SetTrigger("die");
 
-                //Oynanan Karakter
-                if (gameObject.CompareTag("Player"))
+                // Oyuncu olduysa
+                if (CompareTag("Player"))
                 {
-                    if (GetComponent<PlayerController>() != null)
-                    {
-                        GetComponent<PlayerController>().enabled = false;
-                    }
+                    var pc = GetComponent<PlayerController>();
+                    if (pc != null) pc.enabled = false;
 
-                    if (GetComponent<PlayerInput>() != null)
-                    {
-                        GetComponent<PlayerInput>().enabled = false;
-                    }
+                    var pi = GetComponent<PlayerInput>();
+                    if (pi != null) pi.enabled = false;
 
-                    originalScale = transform.localScale;
                     transform.localScale = originalScale;
 
                     if (rangeAttack != null)
                     {
-                        rangeAttack.active = 0; // KAPAT
-                        Debug.Log("RangeAttack kapandý!");
+                        rangeAttack.active = 0;
+                        Debug.Log("RangeAttack kapandi!");
                     }
                 }
 
-                //Düþman
-                if (gameObject.CompareTag("Enemy"))
+                // Dusman olduysa
+                if (CompareTag("Enemy"))
                 {
-                    if (GetComponentInParent<EnemyPatrol>() != null)
-                    {
-                        GetComponentInParent<EnemyPatrol>().enabled = false;
-                    }
+                    var patrol = GetComponentInParent<EnemyPatrol>();
+                    if (patrol != null) patrol.enabled = false;
 
-                    if (GetComponent<MeleeEnemy>() != null)
-                    {
-                        GetComponent<MeleeEnemy>().enabled = false;
-                    }
+                    var melee = GetComponent<MeleeEnemy>();
+                    if (melee != null) melee.enabled = false;
 
-                    Collider2D enemyCollider = GetComponent<Collider2D>();
-                    if (enemyCollider != null)
-                    {
-                        enemyCollider.enabled = false;
-                    }
+                    var col = GetComponent<Collider2D>();
+                    if (col != null) col.enabled = false;
 
-                    // **Cesedin fizik motoruyla etkileþimini kapat**
-                    Rigidbody2D rb = GetComponent<Rigidbody2D>();
-                    if (rb != null)
-                    {
-                        rb.bodyType = RigidbodyType2D.Static; // Fizik motorunu devre dýþý býrak
-                    }
+                    var rb = GetComponent<Rigidbody2D>();
+                    if (rb != null) rb.bodyType = RigidbodyType2D.Static;
 
-                    // **2 saniye sonra cesedi yok et (opsiyonel)**
-                    Destroy(gameObject, 5f); // 5 saniye sonra ceset kaybolacak
+                    Destroy(gameObject, 5f); // 5 saniye sonra yok et
                 }
+
                 dead = true;
             }
         }
     }
 
-    //Hasar almaz durumun sayacý
-    IEnumerator InvincibilityTimer() 
+    private IEnumerator InvincibilityTimer()
     {
-        isInvincible = true; // Yenilmezliði aç
-        yield return new WaitForSeconds(invincibilityDuration); // Belirtilen süreyi bekle
-        isInvincible = false; // Yenilmezliði kapat
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibilityDuration);
+        isInvincible = false;
     }
-
-    private void Update()
-    {
-
-        // Test için karaktere 1 Hasar verme
-        if (Input.GetKeyDown(KeyCode.E) && gameObject.CompareTag("Player")) 
-        {
-            TakeDamage(1);
-        }
-
-        // R tuþuna basýldýðýnda karakterin canlandýrýlmasý.
-        if (currentHealth <= 0 && Input.GetKeyDown(KeyCode.R) && gameObject.CompareTag("Player"))
-        {
-            dead = false;
-            anim.SetTrigger("revive");
-            currentHealth = startingHealth;
-            GetComponent<PlayerController>().enabled = true;
-            GetComponent<PlayerInput>().enabled = true;
-
-            if (rangeAttack != null)
-            {
-                rangeAttack.active = 1; // AÇ
-                Debug.Log("RangeAttack açýldý!");
-            }
-            else
-            {
-                Debug.LogError("RangeAttack bileþeni bulunamadý!");
-            }
-
-            //Karakterin canlandýrýlacak konumunun ayarlanmasý.
-            if (spawnPoint != null) // SpawnPoint atandýysa ýþýnla
-            {
-                transform.position = spawnPoint.position;
-            }
-            else
-            {
-                Debug.LogWarning("SpawnPoint atanmadý! Lütfen bir SpawnPoint nesnesi seçin.");
-            }
-
-        }
-    }
-
-
+    #endregion
 }

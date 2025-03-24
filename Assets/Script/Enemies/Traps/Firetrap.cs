@@ -4,27 +4,32 @@ using UnityEngine;
 
 public class Firetrap : MonoBehaviour
 {
-    [SerializeField] private float damage;
+    #region Ayarlar
+    [SerializeField] private float damage;               // Verilecek hasar
 
-    [Header("FireTrap Timer")]
-    [SerializeField] private float activationDelay;
-    [SerializeField] private float activeTime;
+    [Header("Firetrap Timer")]
+    [SerializeField] private float activationDelay;      // Tuzagin tetiklenme gecikmesi
+    [SerializeField] private float activeTime;           // Tuzagin aktif kalma suresi
+    #endregion
 
+    #region Dahili
     private Animator anim;
     private SpriteRenderer spriteRenderer;
 
-    private bool triggered; // Tuzagin Tetiklenmesi
-    private bool active; // Tuzagin aktif olup oyuncuya hasar vermesi
+    private bool triggered = false;  // Tuzak tetiklendi mi
+    private bool active = false;     // Tuzak aktif mi (hasar verebilir mi)
+    #endregion
 
+    #region Unity Fonksiyonlari
     private void Awake()
     {
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.CompareTag("Player"))
         {
             if (!triggered)
                 StartCoroutine(ActivateFiretrap());
@@ -33,23 +38,29 @@ public class Firetrap : MonoBehaviour
                 collision.GetComponent<Health>().TakeDamage(damage);
         }
     }
+    #endregion
 
+    #region Tuzak Mekanigi
     private IEnumerator ActivateFiretrap()
     {
-        //Tuzagi kirmizi rengine cevirerek oyuncuya tetiklendigini bildiriyor
         triggered = true;
+
+        // Renk degistirerek uyar
         spriteRenderer.color = Color.red;
 
-        //Tuzagin tetiklenmesi icin biraz gecikme ve ardindan eski rengine donuyor
+        // Beklemeden sonra tuzagi aktif et
         yield return new WaitForSeconds(activationDelay);
+
         spriteRenderer.color = Color.white;
         active = true;
         anim.SetBool("activated", true);
 
-        // X sure sonra eski haline donuyor ve resetleniyor
+        // Belirli bir sure aktif kal
         yield return new WaitForSeconds(activeTime);
+
         active = false;
         triggered = false;
         anim.SetBool("activated", false);
     }
+    #endregion
 }

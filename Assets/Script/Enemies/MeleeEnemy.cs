@@ -4,24 +4,32 @@ using UnityEngine;
 
 public class MeleeEnemy : MonoBehaviour
 {
-    [Header("Saldýrý Parametreleri")]
-    [SerializeField] private float attackCooldown;
-    [SerializeField] private float range;
-    [SerializeField] private int damage;
-    private float cooldownTimer = Mathf.Infinity;
+    #region Saldiri Parametreleri
+    [Header("Saldiri Parametreleri")]
+    [SerializeField] private float attackCooldown;     // Saldiri arasindaki bekleme suresi
+    [SerializeField] private float range;              // Saldiri menzili
+    [SerializeField] private int damage;               // Verilecek hasar
+    private float cooldownTimer = Mathf.Infinity;      // Gecen zaman
+    #endregion
 
-    [Header("Collider Parametreleri")]
-    [SerializeField] private float colliderDistance;
+    #region Collider Ayarlari
+    [Header("Collider Ayarlari")]
+    [SerializeField] private float colliderDistance;   // BoxCast uzakligi
     [SerializeField] private BoxCollider2D boxCollider;
+    #endregion
 
-    [Header("Karakter Parametreleri")]
-    [SerializeField] private LayerMask playerLayer;
+    #region Karakter Ayarlari
+    [Header("Karakter Ayarlari")]
+    [SerializeField] private LayerMask playerLayer;    // Oyuncu layer'i
     private Animator anim;
+    #endregion
 
-    //Referanslar
+    #region Referanslar
     private Health playerHealth;
     private EnemyPatrol enemyPatrol;
+    #endregion
 
+    #region Unity Fonksiyonlari
     private void Awake()
     {
         anim = GetComponent<Animator>();
@@ -32,9 +40,9 @@ public class MeleeEnemy : MonoBehaviour
     {
         cooldownTimer += Time.deltaTime;
 
-        if (PlayerInSýght())
+        // Oyuncu goruluyorsa ve bekleme suresi gectiyse saldir
+        if (PlayerInSight())
         {
-            
             if (cooldownTimer >= attackCooldown)
             {
                 cooldownTimer = 0;
@@ -42,41 +50,54 @@ public class MeleeEnemy : MonoBehaviour
             }
         }
 
-        if(enemyPatrol != null)
-            enemyPatrol.enabled = !PlayerInSýght();
+        // Oyuncu goruluyorsa patrol durdur
+        if (enemyPatrol != null)
+            enemyPatrol.enabled = !PlayerInSight();
     }
+    #endregion
 
-    private bool PlayerInSýght()
+    #region Oyuncu Tespiti
+    private bool PlayerInSight()
     {
-        if (enemyPatrol.isStunned == true)
+        // Sersemletilmisse oyuncuyu gorme
+        if (enemyPatrol != null && enemyPatrol.isStunned)
         {
             return false;
         }
-        RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center + transform.right *range *transform.localScale.x *colliderDistance, 
-            new Vector3(boxCollider.bounds.size.x *range, boxCollider.bounds.size.y, boxCollider.bounds.size.z), 
+
+        // BoxCast ile oyuncu kontrolu
+        RaycastHit2D hit = Physics2D.BoxCast(
+            boxCollider.bounds.center + transform.right * range * transform.localScale.x * colliderDistance,
+            new Vector3(boxCollider.bounds.size.x * range, boxCollider.bounds.size.y, boxCollider.bounds.size.z),
             0, Vector2.left, 0, playerLayer);
 
-        if(hit.collider != null)
+        if (hit.collider != null)
         {
             playerHealth = hit.transform.GetComponent<Health>();
         }
 
         return hit.collider != null;
     }
+    #endregion
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireCube(boxCollider.bounds.center + transform.right *range *transform.localScale.x *colliderDistance,
-            new Vector3(boxCollider.bounds.size.x * range, boxCollider.bounds.size.y, boxCollider.bounds.size.z));
-    }
-
-    
+    #region Hasar Verme
+    // Bu metod animasyon icerisinden cagirilmali (animation event)
     private void DamagePlayer()
     {
-        if (PlayerInSýght())
+        if (PlayerInSight())
         {
             playerHealth.TakeDamage(damage);
         }
     }
+    #endregion
+
+    #region Debug
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(
+            boxCollider.bounds.center + transform.right * range * transform.localScale.x * colliderDistance,
+            new Vector3(boxCollider.bounds.size.x * range, boxCollider.bounds.size.y, boxCollider.bounds.size.z));
+    }
+    #endregion
 }

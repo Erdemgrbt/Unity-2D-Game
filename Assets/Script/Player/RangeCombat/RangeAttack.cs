@@ -4,53 +4,60 @@ using UnityEngine;
 
 public class RangeAttack : MonoBehaviour
 {
-    public Transform player;
-    public float orbitRadius = 1.5f;
-    public GameObject firePrefab;
-    public GameObject icePrefab;
-    public GameObject electricPrefab;
-    public float fireSpeed = 10f;
-    public Transform fireSpawnPoint;
+    #region Ayarlar
+    public Transform player;                      // Oyuncu referansi
+    public float orbitRadius = 1.5f;              // Oyuncunun etrafindaki donus yaricapi
+    public GameObject firePrefab;                 // Atis prefab - ates
+    public GameObject icePrefab;                  // Atis prefab - buz
+    public GameObject electricPrefab;             // Atis prefab - elektrik
+    public float fireSpeed = 10f;                 // Atisin hizi
+    public Transform fireSpawnPoint;              // Merminin cikacagi nokta
 
-    [Header("Engeller Ýçin LayerMask")]
-    public LayerMask obstacleLayer;
+    [Header("Engeller Icin LayerMask")]
+    public LayerMask obstacleLayer;               // Mermi engel kontrolu icin
 
+    [Header("Ates Etme Cooldown Suresi")]
+    public float fireCooldown = 0.5f;             // Mermi atma bekleme suresi
+    private float lastFireTime;                   // En son atis zamani
+    #endregion
+
+    #region Dahili Degiskenler
     private Vector3 mousePosition;
     private Vector3 direction;
     private float angle;
 
-    public int active = 1;
-
-    [Header("Ateþ Etme Cooldown Süresi")]
-    public float fireCooldown = 0.5f; // 0.5 saniye cooldown
-    private float lastFireTime; // Son ateþ zamaný
+    public int active = 1;                        // Aktif mi kontrolu (1 = aktif)
 
     private SpriteRenderer spriteRenderer;
 
     private enum ElementType { Fire, Ice, Electric }
     private ElementType currentElement = ElementType.Fire;
+    #endregion
 
+    #region Unity Fonksiyonlari
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        UpdateElementAppearance();
+        UpdateElementAppearance(); // Baslangicta gorsel guncelle
     }
 
     void Update()
     {
         if (active == 1)
         {
-            FollowMouse();
-            RotateAroundPlayer();
-            ShootOnClick();
+            FollowMouse();         // Fareyi takip et
+            RotateAroundPlayer();  // Oyuncunun etrafinda don
+            ShootOnClick();        // Tiklandiginda ates et
 
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.GetKeyDown(KeyCode.Mouse1)) // Sag tik ile element degistir
             {
                 ChangeElement();
             }
         }
     }
+    #endregion
 
+    #region Hareket Fonksiyonlari
     private void FollowMouse()
     {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -64,14 +71,18 @@ public class RangeAttack : MonoBehaviour
     {
         Vector3 offset = new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad), 0) * orbitRadius;
         transform.position = player.position + offset;
+
         float lookAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, lookAngle - 90f);
     }
+    #endregion
 
+    #region Ates Etme
     private void ShootOnClick()
     {
-        if (Input.GetMouseButtonDown(0) && Time.time >= lastFireTime + fireCooldown) // Sol týk ve cooldown kontrolü
+        if (Input.GetMouseButtonDown(0) && Time.time >= lastFireTime + fireCooldown)
         {
+            // Mermi noktasi engel icerisinde mi kontrol et
             float detectionRadius = 0.1f;
             Collider2D hit = Physics2D.OverlapCircle(fireSpawnPoint.position, detectionRadius, obstacleLayer);
 
@@ -88,15 +99,17 @@ public class RangeAttack : MonoBehaviour
                     projectile.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
                 }
 
-                lastFireTime = Time.time; // Son ateþ zamanýný güncelle
+                lastFireTime = Time.time;
             }
             else
             {
-                Debug.Log($"Ateþ noktasý içeride: {hit.gameObject.name}, ateþ edilemiyor!");
+                Debug.Log($"Ates noktasi engel icerisinde: {hit.gameObject.name}, ates edilemez!");
             }
         }
     }
+    #endregion
 
+    #region Element Degisimi ve Gorsel
     private void ChangeElement()
     {
         currentElement = (ElementType)(((int)currentElement + 1) % 3);
@@ -134,10 +147,13 @@ public class RangeAttack : MonoBehaviour
                 return firePrefab;
         }
     }
+    #endregion
 
+    #region Debug
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(fireSpawnPoint.position, 0.1f);
     }
+    #endregion
 }

@@ -4,46 +4,58 @@ using UnityEngine;
 
 public class EnemyPatrol : MonoBehaviour
 {
-    [Header("Patrol Deðiþkenleri")]
-    [SerializeField] private Transform leftEdge;
-    [SerializeField] private Transform rightEdge;
+    #region Patrol Noktalari
+    [Header("Patrol Noktalari")]
+    [SerializeField] private Transform leftEdge;   // Sol sinir
+    [SerializeField] private Transform rightEdge;  // Sag sinir
+    #endregion
 
-    [Header("Düþman")]
-    [SerializeField] private Transform enemy;
+    #region Dusman Referansi
+    [Header("Dusman")]
+    [SerializeField] private Transform enemy; // Hareket edecek dusman objesi
+    #endregion
 
-    [Header("Hareket Deðiþkenleri")]
-    [SerializeField] public float speed;
-    public bool isSlowed = false; // Yavaþlatýldý mý?
-    public bool isStunned= false; // Yavaþlatýldý mý?
-    private float originalSpeed; // Orijinal hýz
-    private bool movingLeft;
+    #region Hareket Ayarlari
+    [Header("Hareket Ayarlari")]
+    [SerializeField] public float speed;       // Mevcut hiz
+    public bool isSlowed = false;              // Yavaslatildi mi?
+    public bool isStunned = false;             // Sersemletildi mi?
+    private float originalSpeed;               // Orijinal hiz
+    private bool movingLeft;                   // Hangi yone gidiyor?
+    #endregion
 
-    [Header("Kenarlarda Bekleme")]
-    [SerializeField] private float idleDuration;
-    private float idleTimer;
+    #region Kenarda Bekleme
+    [Header("Kenarda Bekleme")]
+    [SerializeField] private float idleDuration;  // Kenarda bekleme suresi
+    private float idleTimer;                      // Bekleme sayaci
+    #endregion
 
-    [Header("Düþman Animasyonu")]
-    [SerializeField] private Animator anim;
+    #region Animasyon
+    [Header("Animasyon")]
+    [SerializeField] private Animator anim; // Animator referansi
+    #endregion
 
+    #region Unity Fonksiyonlari
     private void Awake()
     {
-        originalSpeed = speed; // Orijinal hýzý kaydediyoruz
+        originalSpeed = speed; // Oyuna baslarken orijinal hizi kaydet
     }
 
     private void OnDisable()
     {
-        anim.SetBool("moving", false);
+        anim.SetBool("moving", false); // Script disable oldugunda animasyonu durdur
     }
 
     private void Update()
     {
-        
+        // Sersemletilmisse hicbir sey yapma
         if (isStunned)
         {
-            anim.SetBool("moving", false); // Bu da garanti olur
+            anim.SetBool("moving", false);
             return;
         }
 
+        // Patrol hareketi
         if (movingLeft)
         {
             if (enemy.position.x >= leftEdge.position.x)
@@ -59,7 +71,9 @@ public class EnemyPatrol : MonoBehaviour
                 DirectionChange();
         }
     }
+    #endregion
 
+    #region Hareket Mantigi
     private void DirectionChange()
     {
         anim.SetBool("moving", false);
@@ -74,28 +88,33 @@ public class EnemyPatrol : MonoBehaviour
         idleTimer = 0;
         anim.SetBool("moving", true);
 
+        // Sprite'i yone gore dondur
         enemy.localScale = new Vector3(Mathf.Abs(enemy.localScale.x) * _direction,
             enemy.localScale.y,
             enemy.localScale.z);
 
+        // Dusmani hareket ettir
         enemy.position = new Vector3(enemy.position.x + Time.deltaTime * _direction * speed,
             enemy.position.y,
             enemy.position.z);
     }
+    #endregion
 
-    // Yavaþlatma coroutine'i
+    #region Yavaslatma ve Sersemletme
+
+    // Dusmani yavaslat
     public void SlowDown(float slowAmount, float slowDuration)
     {
-        // Eðer zaten yavaþlatýldýysa veya yerine sabitlenmiþse, hýz geri yüklenmeyecek
-        if (isSlowed||isStunned)
+        if (isSlowed || isStunned)
             return;
 
-        isSlowed = true; // Yavaþlatma baþladý
-        speed -= slowAmount; // Hýzý yavaþlat
+        isSlowed = true;
+        speed -= slowAmount;
 
-        // Yavaþlatma süresi sonrasý hýzý geri al
         StartCoroutine(RestoreSpeed(slowDuration));
     }
+
+    // Dusmani sersemlet
     public void Stun(float stunDuration)
     {
         if (isStunned)
@@ -110,18 +129,20 @@ public class EnemyPatrol : MonoBehaviour
 
     private IEnumerator RestoreSpeed(float slowDuration)
     {
-        yield return new WaitForSeconds(slowDuration); // Yavaþlatma süresi kadar bekle
-        speed = originalSpeed; // Hýzý eski haline getir
-        isSlowed = false; // Yavaþlatma bitmiþ olarak iþaretle
+        yield return new WaitForSeconds(slowDuration);
+        speed = originalSpeed;
+        isSlowed = false;
     }
+
     private IEnumerator RemoveStun(float duration)
     {
         Debug.Log("Stunned");
 
-        yield return new WaitForSeconds(duration); // Belirtilen süre kadar bekle
+        yield return new WaitForSeconds(duration);
 
         isStunned = false;
-        anim.SetBool("moving", true); // Animasyonu tekrar baþlat
-        speed = originalSpeed; // Hýzý eski haline getir (defaultSpeed'i tanýmlamalýsýn)
+        anim.SetBool("moving", true);
+        speed = originalSpeed;
     }
+    #endregion
 }
