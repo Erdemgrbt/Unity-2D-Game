@@ -7,6 +7,7 @@ using UnityEngine.PlayerLoop;
 
 public class Health : MonoBehaviour
 {
+    //Ýzzettin deðiþtirdiði yer 
     [Header("Saðlýk")]
     [SerializeField] private float startingHealth;
     public float currentHealth { get; private set; }
