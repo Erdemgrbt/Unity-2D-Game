@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyPatrol : MonoBehaviour
 {
-    [Header ("Patrol Deðiþkenleri")]
+    [Header("Patrol Deðiþkenleri")]
     [SerializeField] private Transform leftEdge;
     [SerializeField] private Transform rightEdge;
 
@@ -12,8 +12,9 @@ public class EnemyPatrol : MonoBehaviour
     [SerializeField] private Transform enemy;
 
     [Header("Hareket Deðiþkenleri")]
-    [SerializeField] private float speed;
-    private Vector3 initScale;
+    [SerializeField] public float speed;
+    public bool isSlowed = false; // Yavaþlatýldý mý?
+    private float originalSpeed; // Orijinal hýz
     private bool movingLeft;
 
     [Header("Kenarlarda Bekleme")]
@@ -23,10 +24,9 @@ public class EnemyPatrol : MonoBehaviour
     [Header("Düþman Animasyonu")]
     [SerializeField] private Animator anim;
 
-    
     private void Awake()
     {
-        initScale = enemy.localScale;
+        originalSpeed = speed; // Orijinal hýzý kaydediyoruz
     }
 
     private void OnDisable()
@@ -36,9 +36,9 @@ public class EnemyPatrol : MonoBehaviour
 
     private void Update()
     {
-        if (movingLeft) 
+        if (movingLeft)
         {
-            if(enemy.position.x >= leftEdge.position.x)
+            if (enemy.position.x >= leftEdge.position.x)
                 MoveInDirection(-1);
             else
                 DirectionChange();
@@ -57,7 +57,7 @@ public class EnemyPatrol : MonoBehaviour
         anim.SetBool("moving", false);
         idleTimer += Time.deltaTime;
 
-        if(idleTimer > idleDuration)
+        if (idleTimer > idleDuration)
             movingLeft = !movingLeft;
     }
 
@@ -66,12 +66,33 @@ public class EnemyPatrol : MonoBehaviour
         idleTimer = 0;
         anim.SetBool("moving", true);
 
-        enemy.localScale = new Vector3(Mathf.Abs(initScale.x) * _direction,
-            initScale.y, 
-            initScale.z);
+        enemy.localScale = new Vector3(Mathf.Abs(enemy.localScale.x) * _direction,
+            enemy.localScale.y,
+            enemy.localScale.z);
 
         enemy.position = new Vector3(enemy.position.x + Time.deltaTime * _direction * speed,
             enemy.position.y,
             enemy.position.z);
+    }
+
+    // Yavaþlatma coroutine'i
+    public void SlowDown(float slowAmount, float slowDuration)
+    {
+        // Eðer zaten yavaþlatýldýysa, hýz geri yüklenmeyecek
+        if (isSlowed)
+            return;
+
+        isSlowed = true; // Yavaþlatma baþladý
+        speed -= slowAmount; // Hýzý yavaþlat
+
+        // Yavaþlatma süresi sonrasý hýzý geri al
+        StartCoroutine(RestoreSpeed(slowDuration));
+    }
+
+    private IEnumerator RestoreSpeed(float slowDuration)
+    {
+        yield return new WaitForSeconds(slowDuration); // Yavaþlatma süresi kadar bekle
+        speed = originalSpeed; // Hýzý eski haline getir
+        isSlowed = false; // Yavaþlatma bitmiþ olarak iþaretle
     }
 }

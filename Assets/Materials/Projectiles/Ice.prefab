@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3866899948361721944}
   - component: {fileID: -8971869397957130088}
   - component: {fileID: 3756250622246281644}
-  - component: {fileID: 1276573442880382772}
+  - component: {fileID: 1113196096427696413}
   m_Layer: 0
   m_Name: Ice
   m_TagString: Untagged
@@ -97,7 +97,7 @@ CircleCollider2D:
   m_Offset: {x: -0.033861812, y: 0}
   serializedVersion: 2
   m_Radius: 0.10567168
---- !u!114 &1276573442880382772
+--- !u!114 &1113196096427696413
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -106,11 +106,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 4503163834695500225}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cad939509f0672d4880f9f5c1ece86ba, type: 3}
+  m_Script: {fileID: 11500000, guid: 663b9a05fd2e87548b95f672500ce520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  explosionPrefab: {fileID: 1657798570406232, guid: c09977376cbd4844599854b8df7c9156, type: 3}
+  slowAmount: 1.5
+  slowDuration: 2
+  freezeEffectPrefab: {fileID: 1657798570406232, guid: c09977376cbd4844599854b8df7c9156, type: 3}
   lifetime: 1
 --- !u!1 &5501053793473774314
 GameObject:

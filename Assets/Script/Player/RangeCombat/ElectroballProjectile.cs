@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FireballProjectile : MonoBehaviour
+public class ElectroballProjectile : MonoBehaviour
 {
     [SerializeField] public int damage = 1;
     public GameObject explosionPrefab; // Patlama efekti prefab'ý
@@ -27,7 +27,7 @@ public class FireballProjectile : MonoBehaviour
             collision.GetComponent<Health>().TakeDamage(damage);
             Destroy(gameObject);
         }
-            
+
     }
 
     private void CreateExplosion()
