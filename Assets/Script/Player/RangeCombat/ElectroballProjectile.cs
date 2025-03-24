@@ -5,6 +5,7 @@ using UnityEngine;
 public class ElectroballProjectile : MonoBehaviour
 {
     [SerializeField] public int damage = 1;
+    public float stunDuration = 1f;
     public GameObject explosionPrefab; // Patlama efekti prefab'ý
     public float lifetime = 2f;        // Merminin ömrü (otomatik yok olma süresi)
     Enemy enemy;
@@ -22,12 +23,24 @@ public class ElectroballProjectile : MonoBehaviour
             SelfDestruction();
         }
 
-        if (collision.tag == "Enemy")
+        if (collision.CompareTag("Enemy"))
         {
             collision.GetComponent<Health>().TakeDamage(damage);
+
+            // EnemyPatrol scriptini düþmanýn parent'ýnda ara
+            EnemyPatrol enemyPatrol = collision.GetComponentInParent<EnemyPatrol>();
+
+            if (enemyPatrol != null)
+            {
+                enemyPatrol.Stun(stunDuration); // Yavaþlatmayý baþlatýyoruz
+            }
+            else
+            {
+                Debug.Log("Enemy does NOT have EnemyPatrol Script!");
+            }
+
             Destroy(gameObject);
         }
-
     }
 
     private void CreateExplosion()

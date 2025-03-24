@@ -110,6 +110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
+  stunDuration: 2
   explosionPrefab: {fileID: 1657798570406232, guid: 599ecdc9691f01a43b4a0ae57ff121ab, type: 3}
   lifetime: 1
 --- !u!1 &5501053793473774314

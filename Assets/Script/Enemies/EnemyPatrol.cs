@@ -14,6 +14,7 @@ public class EnemyPatrol : MonoBehaviour
     [Header("Hareket Deðiþkenleri")]
     [SerializeField] public float speed;
     public bool isSlowed = false; // Yavaþlatýldý mý?
+    public bool isStunned= false; // Yavaþlatýldý mý?
     private float originalSpeed; // Orijinal hýz
     private bool movingLeft;
 
@@ -36,6 +37,13 @@ public class EnemyPatrol : MonoBehaviour
 
     private void Update()
     {
+        
+        if (isStunned)
+        {
+            anim.SetBool("moving", false); // Bu da garanti olur
+            return;
+        }
+
         if (movingLeft)
         {
             if (enemy.position.x >= leftEdge.position.x)
@@ -78,8 +86,8 @@ public class EnemyPatrol : MonoBehaviour
     // Yavaþlatma coroutine'i
     public void SlowDown(float slowAmount, float slowDuration)
     {
-        // Eðer zaten yavaþlatýldýysa, hýz geri yüklenmeyecek
-        if (isSlowed)
+        // Eðer zaten yavaþlatýldýysa veya yerine sabitlenmiþse, hýz geri yüklenmeyecek
+        if (isSlowed||isStunned)
             return;
 
         isSlowed = true; // Yavaþlatma baþladý
@@ -88,11 +96,32 @@ public class EnemyPatrol : MonoBehaviour
         // Yavaþlatma süresi sonrasý hýzý geri al
         StartCoroutine(RestoreSpeed(slowDuration));
     }
+    public void Stun(float stunDuration)
+    {
+        if (isStunned)
+            return;
+
+        isStunned = true;
+        speed = 0;
+        anim.SetBool("moving", false);
+
+        StartCoroutine(RemoveStun(stunDuration));
+    }
 
     private IEnumerator RestoreSpeed(float slowDuration)
     {
         yield return new WaitForSeconds(slowDuration); // Yavaþlatma süresi kadar bekle
         speed = originalSpeed; // Hýzý eski haline getir
         isSlowed = false; // Yavaþlatma bitmiþ olarak iþaretle
+    }
+    private IEnumerator RemoveStun(float duration)
+    {
+        Debug.Log("Stunned");
+
+        yield return new WaitForSeconds(duration); // Belirtilen süre kadar bekle
+
+        isStunned = false;
+        anim.SetBool("moving", true); // Animasyonu tekrar baþlat
+        speed = originalSpeed; // Hýzý eski haline getir (defaultSpeed'i tanýmlamalýsýn)
     }
 }
