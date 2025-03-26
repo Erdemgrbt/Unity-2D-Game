@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Checkpoint : MonoBehaviour
 {
-    [Header("SpawnPoint Ayari")]
+    [Header("SpawnPoint Ayarý")]
     [SerializeField] private Transform spawnPoint; // SpawnPoint objesi
     [SerializeField] private ParticleSystem spawnEffect; // Efekt (Particle System)
     [SerializeField] private AudioClip spawnSound; // Ses efekti
@@ -18,34 +18,33 @@ public class Checkpoint : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Eger oyuncu (Player tag'ine sahip) tabelaya temas ederse
+        // Eðer oyuncu (Player tag'ine sahip) tabelaya temas ederse
         if (other.CompareTag("Player"))
         {
-            // SpawnPoint objesi atanmýþ mý kontrol et
-            if (spawnPoint != null)
+            // Eðer SpawnPoint zaten bu konumdaysa, efekt ve bildirim tetiklenmez
+            if (spawnPoint.position == transform.position)
             {
-                spawnPoint.position = transform.position; // SpawnPoint tabelanýn konumuna çekilir
-                Debug.Log("Yeni Spawn Noktasý Ayarlandý: " + spawnPoint.position);
-
-                // Efekt oynat
-                if (spawnEffect != null)
-                {
-                    Instantiate(spawnEffect, transform.position, Quaternion.identity);
-                }
-
-                // Ses efekti çal
-                if (spawnSound != null)
-                {
-                    audioSource.PlayOneShot(spawnSound);
-                }
-
-                // UI geri bildirim eklemek istersen burada ekleyebilirsin.
-                // Örneðin, bir Text UI ile "Yeni Spawn Noktasý Ayarlandý!" mesajý gösterebilirsin.
+                Debug.Log("SpawnPoint zaten burada, efekt oynatýlmadý.");
+                return; // Ýþlemi burada bitir
             }
-            else
+
+            // SpawnPoint'i yeni konuma ayarla
+            spawnPoint.position = transform.position;
+            Debug.Log("Yeni Spawn Noktasý Ayarlandý: " + spawnPoint.position);
+
+            // Efekt oynat (Eðer efekt tanýmlýysa)
+            if (spawnEffect != null)
             {
-                Debug.LogError("SpawnPoint objesi atanmadý! Lütfen Inspector'dan atayýn.");
+                Instantiate(spawnEffect, transform.position, Quaternion.identity);
             }
+
+            // Ses efekti çal (Eðer ses tanýmlýysa)
+            if (spawnSound != null)
+            {
+                audioSource.PlayOneShot(spawnSound);
+            }
+
+            // UI geri bildirim eklemek istersen burada ekleyebilirsin.
         }
     }
 }
