@@ -7,23 +7,13 @@ using UnityEngine.PlayerLoop;
 
 public class Health : MonoBehaviour
 {
-<<<<<<< Updated upstream
     [Header("Saglik")]
     [SerializeField] private float startingHealth; // Baslangic sagligi
     public float currentHealth { get; private set; } // Mevcut saglik (disaridan sadece okunabilir)
     private Animator anim; // Animator referansi
     public bool dead; // Karakterin olum durumu
-=======
-    #region Saðlýk Deðiþkenleri
-    [Header("Saðlýk Ayarlarý")]
-    [SerializeField] private float startingHealth;
-    public float currentHealth { get; private set; }
-    public bool IsDead { get; private set; }
-    #endregion
->>>>>>> Stashed changes
 
     [Header("Yenilmezlik Durumu")]
-<<<<<<< Updated upstream
     public float invincibilityDuration; // Hasar alindiktan sonra kac saniye yenilmez olunacak
     private bool isInvincible = false; // Yenilmezlik durumu
 
@@ -32,20 +22,6 @@ public class Health : MonoBehaviour
     public Transform spawnPoint; // Yeniden dogma noktasi
     public RangeAttack rangeAttack; // Menzilli saldiri kontrolu
 
-=======
-    [SerializeField] private float invincibilityDuration;
-    private bool isInvincible;
-    #endregion
-
-    #region Diðer Bileþenler
-    private Animator anim;
-    private Vector3 originalScale;
-    public Transform spawnPoint;
-    public RangeAttack rangeAttack;
-    #endregion
-
-    #region Unity Fonksiyonlarý
->>>>>>> Stashed changes
     private void Awake()
     {
         currentHealth = startingHealth; // Baslangic sagligini ayarla
@@ -135,17 +111,12 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-<<<<<<< Updated upstream
         // Test amacli, E tusuna basinca karaktere 1 hasar ver
         if (Input.GetKeyDown(KeyCode.E) && gameObject.CompareTag("Player"))
-=======
-        if (Input.GetKeyDown(KeyCode.E) && CompareTag("Player"))
->>>>>>> Stashed changes
         {
             TakeDamage(1);
         }
 
-<<<<<<< Updated upstream
         // R tusuna basildiginda karakterin canlandirilmasi
         if (currentHealth <= 0 && Input.GetKeyDown(KeyCode.R) && gameObject.CompareTag("Player"))
         {
@@ -176,103 +147,4 @@ public class Health : MonoBehaviour
             }
         }
     }
-=======
-        if (currentHealth <= 0 && Input.GetKeyDown(KeyCode.R) && CompareTag("Player"))
-        {
-            Revive();
-        }
-    }
-    #endregion
-
-    #region Hasar Ýþlemleri
-    public void TakeDamage(float damage)
-    {
-        if (isInvincible || IsDead) return;
-
-        currentHealth = Mathf.Clamp(currentHealth - damage, 0, startingHealth);
-
-        if (currentHealth > 0)
-        {
-            anim.SetTrigger("hurt");
-            StartCoroutine(InvincibilityTimer());
-        }
-        else
-        {
-            Die();
-        }
-    }
-
-    private void Die()
-    {
-        if (IsDead) return;
-
-        anim.SetTrigger("die");
-        IsDead = true;
-
-        if (CompareTag("Player"))
-        {
-            HandlePlayerDeath();
-        }
-        else if (CompareTag("Enemy"))
-        {
-            HandleEnemyDeath();
-        }
-    }
-
-    private void HandlePlayerDeath()
-    {
-        GetComponent<PlayerController>()?.Disable();
-        GetComponent<PlayerInput>()?.Disable();
-        transform.localScale = originalScale;
-        rangeAttack?.Disable();
-    }
-
-    private void HandleEnemyDeath()
-    {
-        GetComponentInParent<EnemyPatrol>()?.Disable();
-        GetComponent<MeleeEnemy>()?.Disable();
-        GetComponent<Collider2D>()?.Disable();
-        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Static;
-        Destroy(gameObject, 2f);
-    }
-
-    private IEnumerator InvincibilityTimer()
-    {
-        isInvincible = true;
-        yield return new WaitForSeconds(invincibilityDuration);
-        isInvincible = false;
-    }
-    #endregion
-
-    #region Canlandýrma Ýþlemi
-    private void Revive()
-    {
-        IsDead = false;
-        anim.SetTrigger("revive");
-        currentHealth = startingHealth;
-
-        GetComponent<PlayerController>()?.Enable();
-        GetComponent<PlayerInput>()?.Enable();
-        rangeAttack?.Enable();
-
-        if (spawnPoint != null)
-        {
-            transform.position = spawnPoint.position;
-        }
-    }
-    #endregion
-}
-
-public static class ComponentExtensions
-{
-    public static void Enable(this Behaviour component)
-    {
-        if (component != null) component.enabled = true;
-    }
-
-    public static void Disable(this Behaviour component)
-    {
-        if (component != null) component.enabled = false;
-    }
->>>>>>> Stashed changes
 }
