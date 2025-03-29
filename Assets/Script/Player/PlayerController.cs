@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _dashingVelocity = 14f;
     [SerializeField] private float _dashingTime = 0.5f;
     [SerializeField] private float _dashCooldown = 1f;
+
     private Vector2 _dashingDir;
     [SerializeField] private bool _isDashing;
     [SerializeField] private bool _canDash = true;
@@ -165,6 +166,16 @@ public class PlayerController : MonoBehaviour
             _lastDashTime = Time.time;
             StartCoroutine(StopDashing());
         }
+    }
+    public void ResetDash()
+    {
+        _canDash = true;
+        ResetDashCooldown();
+    }
+    public void ResetDashCooldown()
+    {
+        // Cooldownu sýfýrlamak için, son dash zamanýný geçmiþe çekiyoruz
+        _lastDashTime = Time.time - _dashCooldown;
     }
 
     private IEnumerator StopDashing()
