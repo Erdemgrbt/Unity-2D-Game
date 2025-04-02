@@ -10,12 +10,12 @@ public class PowerUpDash : MonoBehaviour
 
         if (player != null)
         {
-            // Dash hakkýný yenile
+            // Dash hakkini yenile
             player.ResetDash();
 
-            // Boncuðu devre dýþý býrak
+            // Boncugu devre disi birak
+            Destroy(gameObject);
 
-            // Ýstersen burada bir efekt veya ses de oynatabilirsin
         }
     }
 }

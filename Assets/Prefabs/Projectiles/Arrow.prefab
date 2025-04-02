@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 1171076463351169579}
   m_Layer: 0
   m_Name: Arrow
-  m_TagString: Trap
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.41, y: 0, z: 0}
-  m_LocalScale: {x: 0.125, y: 0.125, z: 0.125}
+  m_LocalScale: {x: 0.13581802, y: 0.13581802, z: 0.13581802}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -76,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: -684563503
   m_SortingLayer: -4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1300925192, guid: e7a58e3a2086ee74ca9749027eb9d630, type: 3}
+  m_Sprite: {fileID: -273938182, guid: e7a58e3a2086ee74ca9749027eb9d630, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

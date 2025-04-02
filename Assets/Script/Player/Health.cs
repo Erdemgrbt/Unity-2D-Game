@@ -82,6 +82,11 @@ public class Health : MonoBehaviour
                         GetComponent<MeleeEnemy>().enabled = false; // Yakin dovus dusmanini devre disi birak
                     }
 
+                    if (GetComponent<RangedEnemy>() != null)
+                    {
+                        GetComponent<RangedEnemy>().enabled = false; // menzilli dusmanini devre disi birak
+                    }
+
                     Collider2D enemyCollider = GetComponent<Collider2D>(); // Dusmanin colliderini al
                     if (enemyCollider != null)
                     {
@@ -94,7 +99,7 @@ public class Health : MonoBehaviour
                         rb.bodyType = RigidbodyType2D.Static; // Fizik motorunu devre disi birak
                     }
 
-                    Destroy(gameObject, 5f); // 5 saniye sonra nesneyi yok et
+                    Destroy(gameObject, 3f); // 5 saniye sonra nesneyi yok et
                 }
                 dead = true; // Olum durumunu aktif et
             }

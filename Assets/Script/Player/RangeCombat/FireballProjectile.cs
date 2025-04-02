@@ -24,7 +24,7 @@ public class FireballProjectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // Eger yere carparsa yok ol
-        if (collision.CompareTag("Ground"))
+        if (collision.CompareTag("Ground") || collision.CompareTag("Projectile"))
         {
             SelfDestruction();
         }

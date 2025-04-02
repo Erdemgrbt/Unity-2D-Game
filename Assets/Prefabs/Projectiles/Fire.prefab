@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 5566346186891046733}
   m_Layer: 6
   m_Name: Fire
-  m_TagString: Untagged
+  m_TagString: Projectile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -132,10 +132,12 @@ MonoBehaviour:
   player: {fileID: 0}
   orbitRadius: 1.1
   firePrefab: {fileID: 5363864132765731389}
+  icePrefab: {fileID: 0}
+  electricPrefab: {fileID: 0}
   fireSpeed: 15
   fireSpawnPoint: {fileID: 3792254710534380943}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 136
-  active: 1
   fireCooldown: 0.5
+  active: 1
