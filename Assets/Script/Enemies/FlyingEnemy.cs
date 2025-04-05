@@ -20,10 +20,17 @@ public class FlyingEnemy : MonoBehaviour
     {
         if (player == null)
             return;
-        if (chase == true)
+
+        if (chase)
+        {
             Chase();
+        }
         else
+        {
             ReturnStartPoint();
+        }
+
+        HandleAnimation(); // Animasyon durumu burada kontrol ediliyor
         Flip();
     }
 
@@ -39,9 +46,27 @@ public class FlyingEnemy : MonoBehaviour
 
     private void Flip()
     {
-        if (transform.position.x > player.transform.position.x)
-            transform.rotation = Quaternion.Euler(0, 0, 0);
+        if (chase)
+        {
+            if (transform.position.x > player.transform.position.x)
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            else
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
         else
-            transform.rotation = Quaternion.Euler(0, 180, 0);
+        {
+            if (transform.position.x > startingPoint.position.x)
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            else
+                transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+    }
+
+    private void HandleAnimation()
+    {
+        bool isMoving = chase || Vector2.Distance(transform.position, startingPoint.position) > 0.05f;
+
+        anim.SetBool("Fly", isMoving); // Fly açýk mý?
+        // Idle'ý ayrýca setlemene gerek yok, çünkü Fly false olduðunda Idle otomatik oynar.
     }
 }
