@@ -367,7 +367,7 @@ Transform:
   m_GameObject: {fileID: 789565880862425940}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.04, y: -0.06, z: 0.007846549}
+  m_LocalPosition: {x: 0.02, y: -0.06, z: 0.007846549}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -521,8 +521,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73c2e383d5f7e1e4aa11661d104994cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackCooldown: 1
-  range: 13
+  attackCooldown: 1.25
+  range: 12
   damage: 1
   firepoint: {fileID: 4682938826525267957}
   fireballs:
@@ -536,7 +536,7 @@ MonoBehaviour:
   - {fileID: 2371012866799016005}
   - {fileID: 4385757345554871460}
   - {fileID: 3424042556500780564}
-  colliderDistance: 0.4
+  colliderDistance: 0.43
   boxCollider: {fileID: 1583212705360686103}
   playerLayer:
     serializedVersion: 2
