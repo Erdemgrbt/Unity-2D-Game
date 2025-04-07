@@ -10,6 +10,7 @@ TagManager:
   - Trap
   - Projectile
   - PowerUP
+  - Gem
   layers:
   - Default
   - TransparentFX
