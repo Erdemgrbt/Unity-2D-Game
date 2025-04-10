@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df55a7fd34a483c40a4bac57ca05b4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 2
+  speed: 4
   chase: 0
   startingPoint: {fileID: 8100187703198543420}
 --- !u!50 &8087603359501934996
