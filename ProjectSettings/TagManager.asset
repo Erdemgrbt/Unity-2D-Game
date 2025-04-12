@@ -11,6 +11,8 @@ TagManager:
   - Projectile
   - PowerUP
   - Gem
+  - ChaseArea
+  - EnemyProjectile
   layers:
   - Default
   - TransparentFX
@@ -20,9 +22,9 @@ TagManager:
   - UI
   - Player
   - Enemy
-  - 
-  - 
-  - 
+  - EnemyProjectile
+  - EnemyDetectionZone
+  - Sign
   - 
   - 
   - 

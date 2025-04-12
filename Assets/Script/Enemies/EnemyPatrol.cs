@@ -4,58 +4,85 @@ using UnityEngine;
 
 public class EnemyPatrol : MonoBehaviour
 {
-    #region Patrol Noktalari
+    #region Enum - AI Durumlarý
+    private enum State
+    {
+        Patrolling,
+        ChasingPlayer,
+        ReturningToStart
+    }
+
+    private State currentState = State.Patrolling;
+    #endregion
+
+    #region Referanslar
     [Header("Patrol Noktalari")]
-    [SerializeField] private Transform leftEdge;   // Sol sinir
-    [SerializeField] private Transform rightEdge;  // Sag sinir
-    #endregion
+    [SerializeField] private Transform leftEdge;
+    [SerializeField] private Transform rightEdge;
 
-    #region Dusman Referansi
     [Header("Dusman")]
-    [SerializeField] private Transform enemy; // Hareket edecek dusman objesi
-    #endregion
+    [SerializeField] private Transform enemy;
+    [SerializeField] private Transform startPoint; // Baþlangýç noktasý
 
-    #region Hareket Ayarlari
     [Header("Hareket Ayarlari")]
-    [SerializeField] public float speed;       // Mevcut hiz
-    public bool isSlowed = false;              // Yavaslatildi mi?
-    public bool isStunned = false;             // Sersemletildi mi?
-    private float originalSpeed;               // Orijinal hiz
-    private bool movingLeft;                   // Hangi yone gidiyor?
-    #endregion
+    [SerializeField] public float speed;
+    public bool isSlowed = false;
+    public bool isStunned = false;
+    private float originalSpeed;
+    private bool movingLeft;
 
-    #region Kenarda Bekleme
     [Header("Kenarda Bekleme")]
-    [SerializeField] private float idleDuration;  // Kenarda bekleme suresi
-    private float idleTimer;                      // Bekleme sayaci
-    #endregion
+    [SerializeField] private float idleDuration;
+    private float idleTimer;
 
-    #region Animasyon
     [Header("Animasyon")]
-    [SerializeField] private Animator anim; // Animator referansi
+    [SerializeField] private Animator anim;
+
+    [Header("Oyuncu Tespiti")]
+    [SerializeField] private BoxCollider2D detectionRange;
+    private Transform playerTarget;
     #endregion
 
     #region Unity Fonksiyonlari
     private void Awake()
     {
-        originalSpeed = speed; // Oyuna baslarken orijinal hizi kaydet
+        originalSpeed = speed;
+        playerTarget = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void OnDisable()
     {
-        anim.SetBool("moving", false); // Script disable oldugunda animasyonu durdur
+        anim.SetBool("moving", false);
     }
 
     private void Update()
     {
-        // Sersemletilmisse hicbir sey yapma
         if (isStunned)
         {
             anim.SetBool("moving", false);
             return;
         }
 
-        // Patrol hareketi
+        switch (currentState)
+        {
+            case State.Patrolling:
+                Patrol();
+                break;
+
+            case State.ChasingPlayer:
+                ChasePlayer();
+                break;
+
+            case State.ReturningToStart:
+                ReturnToStart();
+                break;
+        }
+    }
+    #endregion
+
+    #region AI Durum Fonksiyonlari
+    private void Patrol()
+    {
         if (movingLeft)
         {
             if (enemy.position.x >= leftEdge.position.x)
@@ -71,9 +98,30 @@ public class EnemyPatrol : MonoBehaviour
                 DirectionChange();
         }
     }
+
+    private void ChasePlayer()
+    {
+        if (playerTarget == null) return;
+
+        float direction = Mathf.Sign(playerTarget.position.x - enemy.position.x);
+        MoveInDirection((int)direction);
+    }
+
+    private void ReturnToStart()
+    {
+        float direction = Mathf.Sign(startPoint.position.x - enemy.position.x);
+
+        if (Mathf.Abs(enemy.position.x - startPoint.position.x) < 0.1f)
+        {
+            currentState = State.Patrolling;
+            return;
+        }
+
+        MoveInDirection((int)direction);
+    }
     #endregion
 
-    #region Hareket Mantigi
+    #region Hareket & Yön
     private void DirectionChange()
     {
         anim.SetBool("moving", false);
@@ -88,21 +136,35 @@ public class EnemyPatrol : MonoBehaviour
         idleTimer = 0;
         anim.SetBool("moving", true);
 
-        // Sprite'i yone gore dondur
         enemy.localScale = new Vector3(Mathf.Abs(enemy.localScale.x) * _direction,
             enemy.localScale.y,
             enemy.localScale.z);
 
-        // Dusmani hareket ettir
         enemy.position = new Vector3(enemy.position.x + Time.deltaTime * _direction * speed,
             enemy.position.y,
             enemy.position.z);
     }
     #endregion
 
-    #region Yavaslatma ve Sersemletme
+    #region Trigger Etkileþimleri
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            currentState = State.ChasingPlayer;
+        }
+    }
 
-    // Dusmani yavaslat
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            currentState = State.ReturningToStart;
+        }
+    }
+    #endregion
+
+    #region Yavaþlatma & Sersemletme
     public void SlowDown(float slowAmount, float slowDuration)
     {
         if (isSlowed || isStunned)
@@ -114,7 +176,6 @@ public class EnemyPatrol : MonoBehaviour
         StartCoroutine(RestoreSpeed(slowDuration));
     }
 
-    // Dusmani sersemlet
     public void Stun(float stunDuration)
     {
         if (isStunned)
@@ -136,8 +197,6 @@ public class EnemyPatrol : MonoBehaviour
 
     private IEnumerator RemoveStun(float duration)
     {
-        Debug.Log("Stunned");
-
         yield return new WaitForSeconds(duration);
 
         isStunned = false;
