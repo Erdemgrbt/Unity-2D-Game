@@ -157,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8841dd7a9eee5e4a860ee4c66241e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingHealth: 6
+  startingHealth: 9
   dead: 0
   invincibilityDuration: 0
   spawnPoint: {fileID: 0}
@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df55a7fd34a483c40a4bac57ca05b4aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  speed: 2.5
   chase: 0
   startingPoint: {fileID: 8100187703198543420}
 --- !u!50 &8087603359501934996

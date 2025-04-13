@@ -353,7 +353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8841dd7a9eee5e4a860ee4c66241e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingHealth: 4
+  startingHealth: 12
   dead: 0
   invincibilityDuration: 0
   spawnPoint: {fileID: 0}

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.PlayerLoop;
@@ -19,6 +20,8 @@ public class Health : MonoBehaviour
 
     private Vector3 originalScale; // Karakterin orijinal olcegi
 
+    [Header("Diger")]
+    public GameObject uiTextObject;
     public Transform spawnPoint; // Yeniden dogma noktasi
     public RangeAttack rangeAttack; // Menzilli saldiri kontrolu
 
@@ -49,6 +52,12 @@ public class Health : MonoBehaviour
                 // Karakter oyuncuysa
                 if (gameObject.CompareTag("Player"))
                 {
+                    if (uiTextObject != null)
+                        uiTextObject.SetActive(true);
+
+                    if (Score.score > 0)
+                        Score.score = Score.score - 1;
+
                     if (GetComponent<PlayerController>() != null)
                     {
                         GetComponent<PlayerController>().enabled = false; // PlayerController'i devre disi birak
@@ -72,6 +81,8 @@ public class Health : MonoBehaviour
                 // Karakter dusmansa
                 if (gameObject.CompareTag("Enemy"))
                 {
+                    Score.score = Score.score + 2;
+
                     if (GetComponentInParent<EnemyPatrol>() != null)
                     {
                         GetComponentInParent<EnemyPatrol>().enabled = false; // Devriye davranisini devre disi birak
@@ -116,12 +127,6 @@ public class Health : MonoBehaviour
 
     private void Update()
     {
-        // Test amacli, E tusuna basinca karaktere 1 hasar ver
-        if (Input.GetKeyDown(KeyCode.E) && gameObject.CompareTag("Player"))
-        {
-            TakeDamage(1);
-        }
-
         // R tusuna basildiginda karakterin canlandirilmasi
         if (currentHealth <= 0 && Input.GetKeyDown(KeyCode.R) && gameObject.CompareTag("Player"))
         {
@@ -130,6 +135,9 @@ public class Health : MonoBehaviour
             currentHealth = startingHealth; // Sagligi baslangic seviyesine getir
             GetComponent<PlayerController>().enabled = true; // PlayerController'i etkinlestir
             GetComponent<PlayerInput>().enabled = true; // PlayerInput'u etkinlestir
+
+            if (uiTextObject != null)
+                uiTextObject.SetActive(false);
 
             if (rangeAttack != null)
             {
