@@ -19,7 +19,14 @@ public class RangeAttack : MonoBehaviour
     [Header("Ates Etme Cooldown Suresi")]
     public float fireCooldown = 0.5f;             // Mermi atma bekleme suresi
     private float lastFireTime;                   // En son atis zamani
+
+    [Header("Boost")]
+    public bool isBoosted = false;
+    public int bonusDamage = 0;
+    [HideInInspector] public float originalFireCooldown;
+    [HideInInspector] public bool isAttackSpeedBoosted = false;
     #endregion
+
 
     #region Dahili Degiskenler
     private Vector3 mousePosition;
@@ -39,6 +46,7 @@ public class RangeAttack : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         UpdateElementAppearance(); // Baslangicta gorsel guncelle
+        originalFireCooldown = fireCooldown; // Baslangic degerini kaydet
     }
 
     void Update()
@@ -97,6 +105,25 @@ public class RangeAttack : MonoBehaviour
                     rb.velocity = direction.normalized * fireSpeed;
                     float rotationZ = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
                     projectile.transform.rotation = Quaternion.Euler(0, 0, rotationZ);
+                }
+
+                // Hasar degerini boost durumuna göre projectile'a ata
+                FireballProjectile fireball = projectile.GetComponent<FireballProjectile>();
+                if (fireball != null)
+                {
+                    fireball.damage = fireball.damage + (isBoosted ? bonusDamage : 0);
+                }
+
+                IceballProjectile iceball = projectile.GetComponent<IceballProjectile>();
+                if (iceball != null)
+                {
+                    iceball.damage = iceball.damage + (isBoosted ? bonusDamage : 0);
+                }
+
+                ElectroballProjectile electroball = projectile.GetComponent<ElectroballProjectile>();
+                if (electroball != null)
+                {
+                    electroball.damage = electroball.damage + (isBoosted ? bonusDamage : 0);
                 }
 
                 lastFireTime = Time.time;

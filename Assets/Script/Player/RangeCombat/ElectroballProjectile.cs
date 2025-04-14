@@ -11,10 +11,6 @@ public class ElectroballProjectile : MonoBehaviour
     public float lifetime = 2f;                              // Merminin omru (otomatik yok olma)
     #endregion
 
-    #region Dahili
-    Enemy enemy; // Su anda kullanilmiyor ama tanimli
-    #endregion
-
     #region Unity Fonksiyonlari
     private void Start()
     {
@@ -38,17 +34,18 @@ public class ElectroballProjectile : MonoBehaviour
 
             // Dusmanin parent'indan EnemyPatrol script'ini bul
             EnemyPatrol enemyPatrol = collision.GetComponentInParent<EnemyPatrol>();
+            FlyingEnemy flyingEnemy = collision.GetComponentInParent<FlyingEnemy>();
 
             if (enemyPatrol != null)
             {
                 // Sersemletme uygula
                 enemyPatrol.Stun(stunDuration);
             }
-            else
+        
+            if (flyingEnemy != null)
             {
-                Debug.Log("Enemy does NOT have EnemyPatrol Script!");
+                flyingEnemy.Stun(stunDuration);
             }
-
             // Mermiyi yok et
             Destroy(gameObject);
         }

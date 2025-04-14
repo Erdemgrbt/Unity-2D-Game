@@ -5,10 +5,18 @@ using UnityEngine;
 public class FlyingEnemy : MonoBehaviour
 {
     public float speed;
+    private float originalSpeed;
     public bool chase = false;
     public Transform startingPoint;
     private GameObject player;
     private Animator anim;
+    public bool isSlowed = false;
+    public bool isStunned = false;
+
+    private void Awake()
+    {
+        originalSpeed = speed;
+    }
 
     void Start()
     {
@@ -68,5 +76,43 @@ public class FlyingEnemy : MonoBehaviour
 
         anim.SetBool("Fly", isMoving); // Fly açýk mý?
         // Idle'ý ayrýca setlemene gerek yok, çünkü Fly false olduðunda Idle otomatik oynar.
+    }
+    public void SlowDown(float slowAmount, float slowDuration)
+    {
+        if (isSlowed || isStunned)
+            return;
+
+        isSlowed = true;
+        speed -= slowAmount;
+
+        StartCoroutine(RestoreSpeed(slowDuration));
+    }
+
+    private IEnumerator RestoreSpeed(float slowDuration)
+    {
+        yield return new WaitForSeconds(slowDuration);
+        speed = originalSpeed;
+        isSlowed = false;
+    }
+
+    public void Stun(float stunDuration)
+    {
+        if (isStunned)
+            return;
+
+        isStunned = true;
+        speed = 0;
+        anim.SetBool("Fly", false);
+
+        StartCoroutine(RemoveStun(stunDuration));
+    }
+
+    private IEnumerator RemoveStun(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        isStunned = false;
+        anim.SetBool("Fly", true);
+        speed = originalSpeed;
     }
 }

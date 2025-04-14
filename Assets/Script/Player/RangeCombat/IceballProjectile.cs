@@ -35,15 +35,17 @@ public class IceballProjectile : MonoBehaviour
 
             // Dusmanin parent'indan EnemyPatrol script'ini al
             EnemyPatrol enemyPatrol = collision.GetComponentInParent<EnemyPatrol>();
+            FlyingEnemy flyingEnemy = collision.GetComponentInParent<FlyingEnemy>();
 
             // Eger varsa, yavaslat
             if (enemyPatrol != null)
             {
                 enemyPatrol.SlowDown(slowAmount, slowDuration);
             }
-            else
+
+            if (flyingEnemy != null)
             {
-                Debug.Log("Enemy does NOT have EnemyPatrol Script!");
+                flyingEnemy.SlowDown(slowAmount, slowDuration);
             }
 
             // Mermiyi yok et
