@@ -7,6 +7,7 @@ public class Score : MonoBehaviour
 {
     [SerializeField] private TMP_Text scoreText;
     public static int score;
+    [SerializeField] private AudioClip pickupSound;
 
     private void Start()
     {
@@ -27,6 +28,7 @@ public class Score : MonoBehaviour
         if(other.gameObject.tag == "Gem")
         {
             Destroy(other.gameObject);
+            SoundManager.instance.PlaySound(pickupSound);
             score++;
         }
     }

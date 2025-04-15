@@ -10,6 +10,8 @@ public class ArrowTrap : MonoBehaviour
     [SerializeField] private Transform firePoint;            // Okun cikacagi nokta
     [SerializeField] private GameObject[] arrows;            // Havuzlanmis oklar
     private float cooldownTimer;                             // Gecen zaman
+
+    [SerializeField] private AudioClip arrowSound;
     #endregion
 
     #region Unity Fonksiyonlari
@@ -26,6 +28,8 @@ public class ArrowTrap : MonoBehaviour
     private void Attack()
     {
         cooldownTimer = 0;
+
+        SoundManager.instance.PlaySound(arrowSound);
 
         int index = FindArrow(); // Kullanilmayan oku bul
         arrows[index].transform.position = firePoint.position;

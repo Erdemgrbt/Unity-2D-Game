@@ -4,18 +4,41 @@ using UnityEngine;
 
 public class PowerUpDash : MonoBehaviour
 {
+    [SerializeField] private float respawnTime = 10f;
+    private SpriteRenderer spriteRenderer;
+    private Collider2D col;
+
+    private void Awake()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        col = GetComponent<Collider2D>();
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         PlayerController player = collision.GetComponent<PlayerController>();
 
         if (player != null)
         {
-            // Dash hakkini yenile
+            // Dash hakkýný yenile
             player.ResetDash();
 
-            // Boncugu devre disi birak
-            Destroy(gameObject);
-
+            // Boncuðu geçici olarak kapat
+            StartCoroutine(DisableTemporarily());
         }
+    }
+
+    private System.Collections.IEnumerator DisableTemporarily()
+    {
+        // Görseli ve collider'ý kapat
+        spriteRenderer.enabled = false;
+        col.enabled = false;
+
+        // Belirli bir süre bekle
+        yield return new WaitForSeconds(respawnTime);
+
+        // Yeniden görünür ve kullanýlabilir hale getir
+        spriteRenderer.enabled = true;
+        col.enabled = true;
     }
 }

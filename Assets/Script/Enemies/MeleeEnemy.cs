@@ -24,6 +24,11 @@ public class MeleeEnemy : MonoBehaviour
     private Animator anim;
     #endregion
 
+    #region Ses
+    [Header("Ses")]
+    [SerializeField] private AudioClip HitSound;
+    #endregion
+
     #region Referanslar
     private Health playerHealth;
     private EnemyPatrol enemyPatrol;
@@ -47,6 +52,7 @@ public class MeleeEnemy : MonoBehaviour
             {
                 cooldownTimer = 0;
                 anim.SetTrigger("meleeAttack");
+                SoundManager.instance.PlaySound(HitSound);
             }
         }
 

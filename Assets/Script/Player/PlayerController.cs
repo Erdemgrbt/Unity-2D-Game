@@ -32,6 +32,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _dashingTime = 0.5f;
     [SerializeField] private float _dashCooldown = 1f;
 
+    [Header("Ses")]
+    [SerializeField] private AudioClip jumpSound;
+
     private Vector2 _dashingDir;
     [SerializeField] private bool _isDashing;
     [SerializeField] private bool _canDash = true;
@@ -142,6 +145,7 @@ public class PlayerController : MonoBehaviour
         if (context.started)
         {
             lastJumpPressTime = Time.time;
+            
         }
 
         if ((Time.time - lastGroundedTime <= coyoteTime || touchingDirections.IsGrounded) &&
@@ -149,6 +153,9 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger(AnimationStrings.jump);
             rb.velocity = new Vector2(rb.velocity.x, jumpImpulse);
+
+            if(touchingDirections.IsGrounded)
+                SoundManager.instance.PlaySound(jumpSound);
         }
     }
 

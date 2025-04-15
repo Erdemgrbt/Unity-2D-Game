@@ -53,7 +53,7 @@ MonoBehaviour:
   rightEdge: {fileID: 3448288275465189258}
   enemy: {fileID: 7923720388668972261}
   startPoint: {fileID: 1851591483049638470}
-  speed: 3
+  speed: 3.25
   isSlowed: 0
   isStunned: 0
   idleDuration: 1
@@ -341,6 +341,7 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
+  HitSound: {fileID: 8300000, guid: b8ac7beeb96b086489b502077f9817a0, type: 3}
 --- !u!114 &3689823159504882129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,8 +357,11 @@ MonoBehaviour:
   startingHealth: 12
   dead: 0
   invincibilityDuration: 0
+  uiTextObject: {fileID: 0}
   spawnPoint: {fileID: 0}
   rangeAttack: {fileID: 0}
+  deathSound: {fileID: 8300000, guid: 682819a8ace987347983fa41fe5c7804, type: 3}
+  hurtSound: {fileID: 8300000, guid: e70cf995c6a81d94c90baded0e95fdca, type: 3}
 --- !u!114 &6933001216323147654
 MonoBehaviour:
   m_ObjectHideFlags: 0

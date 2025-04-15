@@ -160,8 +160,12 @@ MonoBehaviour:
   startingHealth: 9
   dead: 0
   invincibilityDuration: 0
+  uiTextObject: {fileID: 0}
   spawnPoint: {fileID: 0}
   rangeAttack: {fileID: 0}
+  destroyTime: 1.15
+  deathSound: {fileID: 8300000, guid: 682819a8ace987347983fa41fe5c7804, type: 3}
+  hurtSound: {fileID: 8300000, guid: e70cf995c6a81d94c90baded0e95fdca, type: 3}
 --- !u!114 &6379508075204502054
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -190,6 +194,8 @@ MonoBehaviour:
   speed: 2.5
   chase: 0
   startingPoint: {fileID: 8100187703198543420}
+  isSlowed: 0
+  isStunned: 0
 --- !u!50 &8087603359501934996
 Rigidbody2D:
   serializedVersion: 4

@@ -10,6 +10,9 @@ public class Firetrap : MonoBehaviour
     [Header("Firetrap Timer")]
     [SerializeField] private float activationDelay;      // Tuzagin tetiklenme gecikmesi
     [SerializeField] private float activeTime;           // Tuzagin aktif kalma suresi
+
+    [Header("Ses")]
+    [SerializeField] private AudioClip firetrapSound;
     #endregion
 
     #region Dahili
@@ -50,6 +53,7 @@ public class Firetrap : MonoBehaviour
 
         // Beklemeden sonra tuzagi aktif et
         yield return new WaitForSeconds(activationDelay);
+        SoundManager.instance.PlaySound(firetrapSound);
 
         spriteRenderer.color = Color.white;
         active = true;

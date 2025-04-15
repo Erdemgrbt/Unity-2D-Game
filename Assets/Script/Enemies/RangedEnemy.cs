@@ -28,6 +28,11 @@ public class RangedEnemy : MonoBehaviour
     private Animator anim;
     #endregion
 
+    #region Ses
+    [Header("Ses")]
+    [SerializeField] private AudioClip fireballSound;
+    #endregion
+
     #region Referanslar
     private EnemyPatrol enemyPatrol;
     #endregion
@@ -80,6 +85,7 @@ public class RangedEnemy : MonoBehaviour
 
     private void RangedAttack()
     {
+        SoundManager.instance.PlaySound(fireballSound);
         cooldownTimer = 0;
         fireballs[FindFireball()].transform.position = firepoint.position;
         fireballs[FindFireball()].GetComponent<EnemyProjectile>().ActivateProjectile();

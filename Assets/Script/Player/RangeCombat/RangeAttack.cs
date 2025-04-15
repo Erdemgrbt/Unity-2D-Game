@@ -12,6 +12,7 @@ public class RangeAttack : MonoBehaviour
     public GameObject electricPrefab;             // Atis prefab - elektrik
     public float fireSpeed = 10f;                 // Atisin hizi
     public Transform fireSpawnPoint;              // Merminin cikacagi nokta
+    [SerializeField] private AudioClip AttackSound;
 
     [Header("Engeller Icin LayerMask")]
     public LayerMask obstacleLayer;               // Mermi engel kontrolu icin
@@ -90,6 +91,7 @@ public class RangeAttack : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && Time.time >= lastFireTime + fireCooldown)
         {
+            SoundManager.instance.PlaySound(AttackSound);
             // Mermi noktasi engel icerisinde mi kontrol et
             float detectionRadius = 0.1f;
             Collider2D hit = Physics2D.OverlapCircle(fireSpawnPoint.position, detectionRadius, obstacleLayer);

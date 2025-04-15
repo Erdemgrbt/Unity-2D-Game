@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 3932397005255847761}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.005, y: 0.137, z: -0.74439925}
-  m_LocalScale: {x: 0.044492207, y: 0.04031527, z: 0.050664198}
+  m_LocalPosition: {x: -0.006526, y: 0.20331, z: -0.74439925}
+  m_LocalScale: {x: 0.073594555, y: 0.06668548, z: 0.083803646}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5206763351334746339}
@@ -100,14 +100,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 6489943461165475735}
   orbitRadius: 1.1
-  firePrefab: {fileID: 4503163834695500225, guid: 9768c189f9d345641890426045eb2495, type: 3}
+  firePrefab: {fileID: 4503163834695500225, guid: 4bf22baba178f6749a7c7b11a2b7ac93, type: 3}
+  icePrefab: {fileID: 4503163834695500225, guid: f723fedde8e1b71498fff98657991070, type: 3}
+  electricPrefab: {fileID: 4503163834695500225, guid: 714a7cfbc33352f4cbb14273f86627ec, type: 3}
   fireSpeed: 15
   fireSpawnPoint: {fileID: 5206763351334746339}
+  AttackSound: {fileID: 8300000, guid: 30809e9cfd5538a488f00d56b28f1cbe, type: 3}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 136
-  active: 1
   fireCooldown: 0.5
+  isBoosted: 0
+  bonusDamage: 0
+  originalFireCooldown: 0
+  isAttackSpeedBoosted: 0
+  active: 1
 --- !u!1 &4031658417423610783
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,6 +133,7 @@ GameObject:
   - component: {fileID: 6327065094361016915}
   - component: {fileID: 8052799473806709326}
   - component: {fileID: 1646482541948301404}
+  - component: {fileID: 422646242180464562}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -142,8 +150,8 @@ Transform:
   m_GameObject: {fileID: 4031658417423610783}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.64, y: -3.9, z: -0.05233021}
-  m_LocalScale: {x: 6.742754, y: 7.4413495, z: 5.921341}
+  m_LocalPosition: {x: -13.27, y: -4.165, z: -0.66073}
+  m_LocalScale: {x: 4.609143, y: 5.086682, z: 4.0476503}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 338194914485403822}
@@ -190,7 +198,7 @@ SpriteRenderer:
   m_SortingLayerID: 619413553
   m_SortingLayer: -2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 116759100, guid: 79008ba161f2271409fb4c7119120536, type: 3}
+  m_Sprite: {fileID: -617990, guid: 7be59b0a729e67944bae0025b435f6c3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -261,16 +269,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c36ccf11f0e901e46b4f958dc1e64651, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 8
+  walkSpeed: 7
   airWalkSpeed: 5
   jumpImpulse: 6.5
-  _dashingVelocity: 16
-  _dashingTime: 0.2
-  _dashCooldown: 0.5
-  _isDashing: 0
-  _canDash: 1
   coyoteTime: 0.2
   jumpBufferTime: 0.1
+  _dashingVelocity: 16
+  _dashingTime: 0.2
+  _dashCooldown: 0.8
+  jumpSound: {fileID: 8300000, guid: 6de949480381326418643a4e1934b6a0, type: 3}
+  _isDashing: 0
+  _canDash: 1
   _isMoving: 0
   _isFacingRight: 1
 --- !u!114 &5408744064399613144
@@ -299,7 +308,7 @@ MonoBehaviour:
     maxDepth: 0
     minNormalAngle: 0
     maxNormalAngle: 0
-  groundDistance: 0.05
+  groundDistance: 0.11
   wallDistance: 0.2
   ceilingDistance: 0.05
   _isGrounded: 0
@@ -317,11 +326,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8841dd7a9eee5e4a860ee4c66241e88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingHealth: 3
+  startingHealth: 5
   dead: 0
   invincibilityDuration: 0.6
+  uiTextObject: {fileID: 0}
   spawnPoint: {fileID: 0}
   rangeAttack: {fileID: 3593109863160203809}
+  deathSound: {fileID: 8300000, guid: 682819a8ace987347983fa41fe5c7804, type: 3}
+  hurtSound: {fileID: 8300000, guid: e70cf995c6a81d94c90baded0e95fdca, type: 3}
 --- !u!114 &6327065094361016915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,8 +488,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.0053627035, y: 0.007025916}
-  m_Size: {x: 0.11224206, y: 0.16922255}
+  m_Offset: {x: -0.0020300902, y: -0.023171686}
+  m_Size: {x: 0.118907236, y: 0.27068645}
   m_Direction: 0
 --- !u!96 &1646482541948301404
 TrailRenderer:
@@ -552,7 +564,7 @@ TrailRenderer:
       m_RotationOrder: 4
     colorGradient:
       serializedVersion: 2
-      key0: {r: 1, g: 1, b: 1, a: 1}
+      key0: {r: 0.8301887, g: 0.105731584, b: 0.105731584, a: 1}
       key1: {r: 1, g: 1, b: 1, a: 0}
       key2: {r: 0, g: 0, b: 0, a: 0}
       key3: {r: 0, g: 0, b: 0, a: 0}
@@ -592,6 +604,20 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &422646242180464562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031658417423610783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e318581cbfaa7944baa8e5dc5905411d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreText: {fileID: 0}
+  pickupSound: {fileID: 8300000, guid: 70d39b82ff9b6fa43b69a82ad85e69f8, type: 3}
 --- !u!1 &4154510880284723565
 GameObject:
   m_ObjectHideFlags: 0

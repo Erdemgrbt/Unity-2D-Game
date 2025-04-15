@@ -24,6 +24,10 @@ public class Health : MonoBehaviour
     public GameObject uiTextObject;
     public Transform spawnPoint; // Yeniden dogma noktasi
     public RangeAttack rangeAttack; // Menzilli saldiri kontrolu
+    [SerializeField] private float destroyTime = 3f;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField] private AudioClip hurtSound;
+
 
     private void Awake()
     {
@@ -42,6 +46,7 @@ public class Health : MonoBehaviour
         {
             anim.SetTrigger("hurt"); // Yaralanma animasyonu tetikle
             StartCoroutine(InvincibilityTimer()); // Yenilmezlik zamanlayicisini baslat
+            SoundManager.instance.PlaySound(hurtSound);
         }
         else
         {
@@ -98,6 +103,11 @@ public class Health : MonoBehaviour
                         GetComponent<RangedEnemy>().enabled = false; // menzilli dusmanini devre disi birak
                     }
 
+                    if (GetComponent<FlyingEnemy>() != null)
+                    {
+                        GetComponent<FlyingEnemy>().enabled = false; // ucan dusmani devre disi birak
+                    }
+
                     Collider2D enemyCollider = GetComponent<Collider2D>(); // Dusmanin colliderini al
                     if (enemyCollider != null)
                     {
@@ -110,9 +120,10 @@ public class Health : MonoBehaviour
                         rb.bodyType = RigidbodyType2D.Static; // Fizik motorunu devre disi birak
                     }
 
-                    Destroy(gameObject, 3f); // 5 saniye sonra nesneyi yok et
+                    Destroy(gameObject, destroyTime); // x saniye sonra nesneyi yok et
                 }
                 dead = true; // Olum durumunu aktif et
+                SoundManager.instance.PlaySound(deathSound);
             }
         }
     }
