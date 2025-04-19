@@ -91,6 +91,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e6e05057abc8943b35d0ebb2128ea3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnTime: 10
+  collectSound: {fileID: 8300000, guid: b7b5a6156961bac44a67504d42ce6fcf, type: 3}
 --- !u!212 &2770042943052249648
 SpriteRenderer:
   m_ObjectHideFlags: 0

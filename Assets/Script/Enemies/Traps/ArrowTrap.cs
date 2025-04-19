@@ -5,16 +5,15 @@ using UnityEngine;
 
 public class ArrowTrap : MonoBehaviour
 {
-    #region Ayarlar
     [SerializeField] private float attackCooldown;           // Ok firlatma bekleme suresi
     [SerializeField] private Transform firePoint;            // Okun cikacagi nokta
     [SerializeField] private GameObject[] arrows;            // Havuzlanmis oklar
     private float cooldownTimer;                             // Gecen zaman
 
     [SerializeField] private AudioClip arrowSound;
-    #endregion
+    
 
-    #region Unity Fonksiyonlari
+    
     private void Update()
     {
         cooldownTimer += Time.deltaTime;
@@ -22,14 +21,14 @@ public class ArrowTrap : MonoBehaviour
         if (cooldownTimer >= attackCooldown)
             Attack();
     }
-    #endregion
+    
 
-    #region Atis Mekanigi
+   
     private void Attack()
     {
         cooldownTimer = 0;
 
-        SoundManager.instance.PlaySound(arrowSound);
+        GetComponent<SFXSound>().PlaySound(arrowSound);
 
         int index = FindArrow(); // Kullanilmayan oku bul
         arrows[index].transform.position = firePoint.position;
@@ -47,5 +46,5 @@ public class ArrowTrap : MonoBehaviour
         // Hepsi aktifse ilk oku kullan (opsiyonel: havuz buyutulebilir)
         return 0;
     }
-    #endregion
+    
 }

@@ -145,3 +145,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackPowerBoostTime: 4
   attackPowerBoost: 1
+  collectSound: {fileID: 8300000, guid: b0e62ed71b1538648b719821f4f63b4c, type: 3}

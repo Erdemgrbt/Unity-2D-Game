@@ -5,14 +5,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    #region Bilesenler
     private Rigidbody2D rb;
     private Animator animator;
     private TrailRenderer _trailRenderer;
     private TouchingDirections touchingDirections;
-    #endregion
 
-    #region Hareket Ayarlari
+    
     [Header("Hareket Parametreleri")]
     public float walkSpeed = 5f;
     public float airWalkSpeed = 3f;
@@ -24,9 +22,7 @@ public class PlayerController : MonoBehaviour
     private float lastGroundedTime;
     private float lastJumpPressTime;
     private Vector2 moveInput;
-    #endregion
 
-    #region Dash Ayarlari
     [Header("Dash Parametreleri")]
     [SerializeField] private float _dashingVelocity = 14f;
     [SerializeField] private float _dashingTime = 0.5f;
@@ -34,14 +30,13 @@ public class PlayerController : MonoBehaviour
 
     [Header("Ses")]
     [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip dashSound;
 
     private Vector2 _dashingDir;
     [SerializeField] private bool _isDashing;
     [SerializeField] private bool _canDash = true;
     private float _lastDashTime;
-    #endregion
 
-    #region Yurutme & Yon Ayarlari
     [Header("Yurutme ve Yon")]
     [SerializeField] private bool _isMoving = false;
     public bool isMoving
@@ -67,9 +62,7 @@ public class PlayerController : MonoBehaviour
             _isFacingRight = value;
         }
     }
-    #endregion
 
-    #region Unity Fonksiyonlari
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -104,9 +97,7 @@ public class PlayerController : MonoBehaviour
             _canDash = true;
         }
     }
-    #endregion
 
-    #region Hareket Hesaplama
     public float CurrentMoveSpeed
     {
         get
@@ -130,9 +121,9 @@ public class PlayerController : MonoBehaviour
             IsFacingRight = false;
         }
     }
-    #endregion
+    
 
-    #region Input Fonksiyonlari
+
     public void onMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
@@ -169,6 +160,7 @@ public class PlayerController : MonoBehaviour
 
             Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             _dashingDir = (mousePosition - (Vector2)transform.position).normalized;
+            SoundManager.instance.PlaySound(dashSound);
 
             _lastDashTime = Time.time;
             StartCoroutine(StopDashing());
@@ -197,5 +189,4 @@ public class PlayerController : MonoBehaviour
         _trailRenderer.emitting = false;
         _isDashing = false;
     }
-    #endregion
 }

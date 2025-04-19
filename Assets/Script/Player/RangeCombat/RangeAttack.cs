@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RangeAttack : MonoBehaviour
 {
-    #region Ayarlar
     public Transform player;                      // Oyuncu referansi
     public float orbitRadius = 1.5f;              // Oyuncunun etrafindaki donus yaricapi
     public GameObject firePrefab;                 // Atis prefab - ates
@@ -12,7 +11,9 @@ public class RangeAttack : MonoBehaviour
     public GameObject electricPrefab;             // Atis prefab - elektrik
     public float fireSpeed = 10f;                 // Atisin hizi
     public Transform fireSpawnPoint;              // Merminin cikacagi nokta
-    [SerializeField] private AudioClip AttackSound;
+    [SerializeField] private AudioClip FireAttackSound;
+    [SerializeField] private AudioClip IceAttackSound;
+    [SerializeField] private AudioClip ElectricAttackSound;
 
     [Header("Engeller Icin LayerMask")]
     public LayerMask obstacleLayer;               // Mermi engel kontrolu icin
@@ -26,10 +27,8 @@ public class RangeAttack : MonoBehaviour
     public int bonusDamage = 0;
     [HideInInspector] public float originalFireCooldown;
     [HideInInspector] public bool isAttackSpeedBoosted = false;
-    #endregion
 
 
-    #region Dahili Degiskenler
     private Vector3 mousePosition;
     private Vector3 direction;
     private float angle;
@@ -40,9 +39,9 @@ public class RangeAttack : MonoBehaviour
 
     private enum ElementType { Fire, Ice, Electric }
     private ElementType currentElement = ElementType.Fire;
-    #endregion
 
-    #region Unity Fonksiyonlari
+
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -64,9 +63,7 @@ public class RangeAttack : MonoBehaviour
             }
         }
     }
-    #endregion
 
-    #region Hareket Fonksiyonlari
     private void FollowMouse()
     {
         mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -84,14 +81,18 @@ public class RangeAttack : MonoBehaviour
         float lookAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, lookAngle - 90f);
     }
-    #endregion
 
-    #region Ates Etme
     private void ShootOnClick()
     {
         if (Input.GetMouseButtonDown(0) && Time.time >= lastFireTime + fireCooldown)
         {
-            SoundManager.instance.PlaySound(AttackSound);
+            if(currentElement == ElementType.Fire)
+                SoundManager.instance.PlaySound(FireAttackSound);
+            if (currentElement == ElementType.Ice)
+                SoundManager.instance.PlaySound(IceAttackSound);
+            if (currentElement == ElementType.Electric)
+                SoundManager.instance.PlaySound(ElectricAttackSound);
+
             // Mermi noktasi engel icerisinde mi kontrol et
             float detectionRadius = 0.1f;
             Collider2D hit = Physics2D.OverlapCircle(fireSpawnPoint.position, detectionRadius, obstacleLayer);
@@ -136,9 +137,7 @@ public class RangeAttack : MonoBehaviour
             }
         }
     }
-    #endregion
 
-    #region Element Degisimi ve Gorsel
     private void ChangeElement()
     {
         currentElement = (ElementType)(((int)currentElement + 1) % 3);
@@ -176,13 +175,11 @@ public class RangeAttack : MonoBehaviour
                 return firePrefab;
         }
     }
-    #endregion
 
-    #region Debug
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(fireSpawnPoint.position, 0.1f);
     }
-    #endregion
+
 }

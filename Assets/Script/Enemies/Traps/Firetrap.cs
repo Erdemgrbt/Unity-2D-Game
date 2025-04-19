@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Firetrap : MonoBehaviour
 {
-    #region Ayarlar
+    
     [SerializeField] private float damage;               // Verilecek hasar
 
     [Header("Firetrap Timer")]
@@ -13,17 +13,17 @@ public class Firetrap : MonoBehaviour
 
     [Header("Ses")]
     [SerializeField] private AudioClip firetrapSound;
-    #endregion
+    
 
-    #region Dahili
+    
     private Animator anim;
     private SpriteRenderer spriteRenderer;
 
     private bool triggered = false;  // Tuzak tetiklendi mi
     private bool active = false;     // Tuzak aktif mi (hasar verebilir mi)
-    #endregion
+    
 
-    #region Unity Fonksiyonlari
+    
     private void Awake()
     {
         anim = GetComponent<Animator>();
@@ -41,9 +41,9 @@ public class Firetrap : MonoBehaviour
                 collision.GetComponent<Health>().TakeDamage(damage);
         }
     }
-    #endregion
+    
 
-    #region Tuzak Mekanigi
+    
     private IEnumerator ActivateFiretrap()
     {
         triggered = true;
@@ -53,7 +53,7 @@ public class Firetrap : MonoBehaviour
 
         // Beklemeden sonra tuzagi aktif et
         yield return new WaitForSeconds(activationDelay);
-        SoundManager.instance.PlaySound(firetrapSound);
+        GetComponent<SFXSound>().PlaySound(firetrapSound);
 
         spriteRenderer.color = Color.white;
         active = true;
@@ -66,5 +66,4 @@ public class Firetrap : MonoBehaviour
         triggered = false;
         anim.SetBool("activated", false);
     }
-    #endregion
 }

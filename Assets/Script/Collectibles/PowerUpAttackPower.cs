@@ -6,11 +6,12 @@ public class PowerUpAttackPower : MonoBehaviour
 {
     [SerializeField] private float attackPowerBoostTime = 1f;
     [SerializeField] private int attackPowerBoost= 1;
+    [SerializeField] private AudioClip collectSound;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         RangeAttack rangeAttack = collision.GetComponentInChildren<RangeAttack>();
-
+        SoundManager.instance.PlaySound(collectSound);
         if (rangeAttack != null)
         {
             StartCoroutine(AttackPowerBoost(rangeAttack));

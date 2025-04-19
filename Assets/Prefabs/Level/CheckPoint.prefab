@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 8344690635397815188}
   - component: {fileID: 4177468318266992316}
   m_Layer: 0
-  m_Name: Checkpoint
+  m_Name: CheckPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,4 +145,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {fileID: 0}
   spawnEffect: {fileID: 198199124971463994, guid: 816b2e55a22aea04597fe7990ad0d333, type: 3}
-  spawnSound: {fileID: 0}
+  spawnSound: {fileID: 8300000, guid: c3b08d694adfc894990270811e44f5a7, type: 3}

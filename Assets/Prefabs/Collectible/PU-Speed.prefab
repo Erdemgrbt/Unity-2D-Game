@@ -146,3 +146,4 @@ MonoBehaviour:
   speedBoostTime: 2
   speedBoost: 4
   airspeedBoost: 2
+  collectSound: {fileID: 8300000, guid: 6cf9c85b5a3b88c468b21b9d21250adf, type: 3}

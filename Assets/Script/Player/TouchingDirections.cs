@@ -4,25 +4,21 @@ using UnityEngine;
 
 public class TouchingDirections : MonoBehaviour
 {
-    #region Ayarlar
     public ContactFilter2D castFilter;        // Ne ile temas kontrol edilecek
     public float groundDistance = 0.05f;      // Zemin mesafesi
     public float wallDistance = 0.2f;         // Duvar mesafesi
     public float ceilingDistance = 0.05f;     // Tavan mesafesi
-    #endregion
+    
 
-    #region Bilesenler
     private CapsuleCollider2D touchingCol;
     private Animator animator;
-    #endregion
+    
 
-    #region Raycast Verileri
     RaycastHit2D[] groundHits = new RaycastHit2D[5];
     RaycastHit2D[] wallHits = new RaycastHit2D[5];
     RaycastHit2D[] ceilingHits = new RaycastHit2D[5];
-    #endregion
+    
 
-    #region Temas Durumlari
 
     [SerializeField]
     private bool _isGrounded;
@@ -63,9 +59,7 @@ public class TouchingDirections : MonoBehaviour
     // Sag veya sol duvara bakiyor mu kontrolu icin
     private Vector2 wallCheckDirection => transform.localScale.x > 0 ? Vector2.right : Vector2.left;
 
-    #endregion
 
-    #region Unity Fonksiyonlari
     private void Awake()
     {
         touchingCol = GetComponent<CapsuleCollider2D>();
@@ -83,5 +77,5 @@ public class TouchingDirections : MonoBehaviour
         // Tavan kontrolu
         IsOnCeiling = touchingCol.Cast(Vector2.up, castFilter, ceilingHits, ceilingDistance) > 0;
     }
-    #endregion
+
 }

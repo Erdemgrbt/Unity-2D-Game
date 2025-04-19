@@ -7,10 +7,13 @@ public class PowerUpSpeed : MonoBehaviour
     [SerializeField] private float speedBoostTime = 1f;
     [SerializeField] private float speedBoost = 2f;
     [SerializeField] private float airspeedBoost = 2f;
+    [SerializeField] private AudioClip collectSound;
+
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         PlayerController playerController = collision.GetComponent<PlayerController>();
+        SoundManager.instance.PlaySound(collectSound);
 
         if (playerController != null)
         {

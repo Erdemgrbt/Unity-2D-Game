@@ -7,6 +7,7 @@ public class PowerUpDash : MonoBehaviour
     [SerializeField] private float respawnTime = 10f;
     private SpriteRenderer spriteRenderer;
     private Collider2D col;
+    [SerializeField] private AudioClip collectSound;
 
     private void Awake()
     {
@@ -17,6 +18,7 @@ public class PowerUpDash : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         PlayerController player = collision.GetComponent<PlayerController>();
+        SoundManager.instance.PlaySound(collectSound);
 
         if (player != null)
         {
