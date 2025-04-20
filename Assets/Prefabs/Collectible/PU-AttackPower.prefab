@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5751097156180753156}
   - component: {fileID: 2962572459788764362}
   - component: {fileID: 3464981578755762364}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PU-AttackPower
   m_TagString: PowerUP
   m_Icon: {fileID: 0}

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8867947821374670808}
   - component: {fileID: 7310464299849036580}
   - component: {fileID: 2770042943052249648}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PU-Dash
   m_TagString: PowerUP
   m_Icon: {fileID: 0}

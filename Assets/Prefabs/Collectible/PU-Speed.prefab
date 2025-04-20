@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 863152452944603035}
   - component: {fileID: 8750011149473193189}
   - component: {fileID: 3958417170610720712}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: PU-Speed
   m_TagString: PowerUP
   m_Icon: {fileID: 0}
