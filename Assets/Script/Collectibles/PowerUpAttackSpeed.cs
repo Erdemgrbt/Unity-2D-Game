@@ -11,7 +11,8 @@ public class PowerUpAttackSpeed : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         RangeAttack rangeAttack = collision.GetComponentInChildren<RangeAttack>();
-        SoundManager.instance.PlaySound(collectSound);
+        if (collision.CompareTag("Player"))
+            SoundManager.instance.PlaySound(collectSound);
 
         if (rangeAttack != null)
         {

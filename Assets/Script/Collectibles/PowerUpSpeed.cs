@@ -13,7 +13,8 @@ public class PowerUpSpeed : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         PlayerController playerController = collision.GetComponent<PlayerController>();
-        SoundManager.instance.PlaySound(collectSound);
+        if (collision.CompareTag("Player"))
+            SoundManager.instance.PlaySound(collectSound);
 
         if (playerController != null)
         {
