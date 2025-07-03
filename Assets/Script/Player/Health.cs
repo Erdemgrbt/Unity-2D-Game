@@ -73,6 +73,11 @@ public class Health : MonoBehaviour
                         GetComponent<PlayerInput>().enabled = false; // PlayerInput'u devre disi birak
                     }
 
+                    if (GetComponent<Rigidbody2D>() != null)
+                    {
+                        GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionX;
+                    }
+
                     originalScale = transform.localScale; // Mevcut olcegi kaydet
                     transform.localScale = originalScale; // Olcegi koru
 
@@ -144,6 +149,7 @@ public class Health : MonoBehaviour
             dead = false; // Olum durumunu kaldir
             anim.SetTrigger("revive"); // Canlanma animasyonunu tetikle
             currentHealth = startingHealth; // Sagligi baslangic seviyesine getir
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezeRotation;
             GetComponent<PlayerController>().enabled = true; // PlayerController'i etkinlestir
             GetComponent<PlayerInput>().enabled = true; // PlayerInput'u etkinlestir
 

@@ -105,7 +105,9 @@ MonoBehaviour:
   electricPrefab: {fileID: 4503163834695500225, guid: 714a7cfbc33352f4cbb14273f86627ec, type: 3}
   fireSpeed: 15
   fireSpawnPoint: {fileID: 5206763351334746339}
-  AttackSound: {fileID: 8300000, guid: 30809e9cfd5538a488f00d56b28f1cbe, type: 3}
+  FireAttackSound: {fileID: 0}
+  IceAttackSound: {fileID: 0}
+  ElectricAttackSound: {fileID: 0}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 136
@@ -127,12 +129,12 @@ GameObject:
   - component: {fileID: 8818842024412771648}
   - component: {fileID: 1039442549111867064}
   - component: {fileID: 3216624244426644628}
-  - component: {fileID: 5821592775370008559}
-  - component: {fileID: 5408744064399613144}
-  - component: {fileID: 6655723020649734953}
   - component: {fileID: 6327065094361016915}
   - component: {fileID: 8052799473806709326}
   - component: {fileID: 1646482541948301404}
+  - component: {fileID: 5821592775370008559}
+  - component: {fileID: 5408744064399613144}
+  - component: {fileID: 6655723020649734953}
   - component: {fileID: 422646242180464562}
   m_Layer: 6
   m_Name: Player
@@ -257,83 +259,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &5821592775370008559
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4031658417423610783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c36ccf11f0e901e46b4f958dc1e64651, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  walkSpeed: 7
-  airWalkSpeed: 5
-  jumpImpulse: 6.5
-  coyoteTime: 0.2
-  jumpBufferTime: 0.1
-  _dashingVelocity: 16
-  _dashingTime: 0.2
-  _dashCooldown: 0.8
-  jumpSound: {fileID: 8300000, guid: 6de949480381326418643a4e1934b6a0, type: 3}
-  _isDashing: 0
-  _canDash: 1
-  _isMoving: 0
-  _isFacingRight: 1
---- !u!114 &5408744064399613144
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4031658417423610783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc7e80138663cbf43b30921a4e6c39bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  castFilter:
-    useTriggers: 0
-    useLayerMask: 0
-    useDepth: 0
-    useOutsideDepth: 0
-    useNormalAngle: 0
-    useOutsideNormalAngle: 0
-    layerMask:
-      serializedVersion: 2
-      m_Bits: 0
-    minDepth: 0
-    maxDepth: 0
-    minNormalAngle: 0
-    maxNormalAngle: 0
-  groundDistance: 0.11
-  wallDistance: 0.2
-  ceilingDistance: 0.05
-  _isGrounded: 0
-  _isOnWall: 0
-  _isOnCeiling: 0
---- !u!114 &6655723020649734953
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4031658417423610783}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8841dd7a9eee5e4a860ee4c66241e88, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startingHealth: 5
-  dead: 0
-  invincibilityDuration: 0.6
-  uiTextObject: {fileID: 0}
-  spawnPoint: {fileID: 0}
-  rangeAttack: {fileID: 3593109863160203809}
-  deathSound: {fileID: 8300000, guid: 682819a8ace987347983fa41fe5c7804, type: 3}
-  hurtSound: {fileID: 8300000, guid: e70cf995c6a81d94c90baded0e95fdca, type: 3}
 --- !u!114 &6327065094361016915
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -604,6 +529,85 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 1
+--- !u!114 &5821592775370008559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031658417423610783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c36ccf11f0e901e46b4f958dc1e64651, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  walkSpeed: 7
+  airWalkSpeed: 5
+  jumpImpulse: 6.5
+  coyoteTime: 0.2
+  jumpBufferTime: 0.1
+  _dashingVelocity: 16
+  _dashingTime: 0.2
+  _dashCooldown: 0.8
+  jumpSound: {fileID: 8300000, guid: 6de949480381326418643a4e1934b6a0, type: 3}
+  dashSound: {fileID: 0}
+  _isDashing: 0
+  _canDash: 1
+  _isMoving: 0
+  _isFacingRight: 1
+--- !u!114 &5408744064399613144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031658417423610783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc7e80138663cbf43b30921a4e6c39bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  castFilter:
+    useTriggers: 0
+    useLayerMask: 0
+    useDepth: 0
+    useOutsideDepth: 0
+    useNormalAngle: 0
+    useOutsideNormalAngle: 0
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 0
+    minDepth: 0
+    maxDepth: 0
+    minNormalAngle: 0
+    maxNormalAngle: 0
+  groundDistance: 0.11
+  wallDistance: 0.2
+  ceilingDistance: 0.05
+  _isGrounded: 0
+  _isOnWall: 0
+  _isOnCeiling: 0
+--- !u!114 &6655723020649734953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4031658417423610783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8841dd7a9eee5e4a860ee4c66241e88, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startingHealth: 5
+  dead: 0
+  invincibilityDuration: 0.6
+  uiTextObject: {fileID: 0}
+  spawnPoint: {fileID: 0}
+  rangeAttack: {fileID: 3593109863160203809}
+  destroyTime: 3
+  deathSound: {fileID: 8300000, guid: 682819a8ace987347983fa41fe5c7804, type: 3}
+  hurtSound: {fileID: 8300000, guid: e70cf995c6a81d94c90baded0e95fdca, type: 3}
 --- !u!114 &422646242180464562
 MonoBehaviour:
   m_ObjectHideFlags: 0

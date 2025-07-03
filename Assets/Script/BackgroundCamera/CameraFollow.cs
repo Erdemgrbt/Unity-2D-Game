@@ -14,16 +14,13 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        // Cinemachine Virtual Camera'dan Framing Transposer bileþenini al
         framingTransposer = virtualCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
 
-        // Eðer playerController baðlanmadýysa sahneden otomatik olarak bulmaya çalýþ
         if (playerController == null)
         {
             playerController = FindObjectOfType<PlayerController>();
         }
 
-        // Kamera hýzý baþlangýçta ayarlanýyor
         if (framingTransposer != null)
         {
             framingTransposer.m_XDamping = cameraSpeedX;
@@ -34,21 +31,17 @@ public class CameraFollow : MonoBehaviour
     {
         if (framingTransposer != null && playerController != null)
         {
-            // IsFacingRight deðerine göre kameranýn X ofsetini ayarla
             if (playerController.IsFacingRight)
             {
-                // Sað yöne bakarken ofset pozitif
                 framingTransposer.m_TrackedObjectOffset = new Vector3(offsetMultiplier, 0, 0);
             }
             else
             {
-                // Sol yöne bakarken ofset negatif
                 framingTransposer.m_TrackedObjectOffset = new Vector3(-offsetMultiplier, 0, 0);
             }
         }
     }
 
-    // Kamera hýzýný dinamik olarak deðiþtirmek için bir metot ekle
     public void SetCameraSpeedX(float newSpeed)
     {
         if (framingTransposer != null)
